@@ -8,13 +8,13 @@ allowed-tools: Write, Read, Glob, Edit
 
 Task 이름: $ARGUMENTS
 
-autonomous-driving-docs-writer agent의 스타일 가이드를 따라 `/home/oiei/ad-simulation-public/tasks/$ARGUMENTS.md` 파일을 생성.
+`./tasks/$ARGUMENTS.md` 파일을 아래 템플릿으로 생성.
 
 ## 템플릿
 
 ```markdown
 ---
-title: [Task 이름 - 한글]
+title: [Task 이름]
 layout: default
 parent: Tasks
 nav_order: [다음 순서]
@@ -22,50 +22,36 @@ nav_order: [다음 순서]
 
 # [Task 이름]
 
-## Objective
-- 핵심 목표
+[한 줄 설명]
 
-## Approach
+## Tasks
 
-### Problem Statement
-- 배경/문제 정의
-- 현재 한계점
+- Task 1
+- Task 2
+- Task 3
 
-### Method Candidates
+---
 
-| Method | Pros | Cons |
-|--------|------|------|
-| Option A | - | - |
-| Option B | - | - |
+## Details
 
-### Selected Method & Rationale
-- **선택**:
-- **근거**:
+### Task 1
 
-### Implementation Outline
+- 상세 내용
 
-```mermaid
-graph TD
-    A[Step 1] --> B[Step 2]
-    B --> C[Step 3]
-```
+### Task 2
 
-- Step 1:
-- Step 2:
-- Step 3:
+- 상세 내용
 
-## Results
-- (추후 작성)
+### Task 3
 
-## Notes
--
+- 상세 내용
 ```
 
 ## 작성 규칙
-1. 개조식, 계층적 구조
-2. 명사형 종결 (~다, ~요 지양)
-3. 간결하게 작성
-4. Mermaid 다이어그램 적극 활용
+1. Tasks: 해야 할 일을 간단명료하게 나열
+2. Details: 각 Task의 상세 내용
+3. 개조식, 명사형 종결
+4. 간결하게 작성
 
 ## 후처리
-파일 생성 후 `/home/oiei/ad-simulation-public/index.md`의 Task 테이블에 새 항목 추가.
+파일 생성 후 `./index.md`의 Task 테이블에 새 항목 추가.

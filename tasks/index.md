@@ -13,4 +13,4 @@ has_children: true
 
 | Task | Objective | Status |
 |------|-----------|--------|
-| (예정) | - | - |
+| [VILS Server](vils-server) | FMTC PG용 가상 NPC 시뮬레이션 서버 구축 | 진행중 |
