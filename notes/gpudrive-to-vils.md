@@ -1,6 +1,25 @@
-# GPUDrive to VILS: 자율주행 시뮬레이션 구축기
+---
+title: GPUDrive to VILS
+layout: default
+nav_order: 2
+---
 
-> GPUDrive 오픈소스를 활용해 FMTC 자율주행 테스트베드용 Vehicle-In-the-Loop Simulation(VILS)을 구축한 과정
+# GPUDrive to VILS
+{: .no_toc }
+
+자율주행 시뮬레이션 구축기
+{: .fs-6 .fw-300 }
+
+GPUDrive 오픈소스를 활용해 FMTC 자율주행 테스트베드용 Vehicle-In-the-Loop Simulation(VILS)을 구축한 과정
+{: .fs-5 .fw-300 }
+
+---
+
+## Table of contents
+{: .no_toc .text-delta }
+
+1. TOC
+{:toc}
 
 ---
 
@@ -36,7 +55,7 @@
 
 ## 핵심 컴포넌트
 
-### 1. GPUDrive 환경
+### GPUDrive 환경
 
 [GPUDrive](https://github.com/Emerge-Lab/gpudrive)는 Waymo Open Dataset 기반 자율주행 시뮬레이터.
 
@@ -54,7 +73,7 @@ env.step_dynamics(actions)    # 물리 시뮬레이션
 - `collision_behavior="ignore"` - 충돌 처리
 - 91개 이산 액션 (13 steering × 7 acceleration)
 
-### 2. Neural Policy
+### Neural Policy
 
 사전학습된 뉴럴넷으로 NPC 행동 결정:
 
@@ -65,7 +84,7 @@ policy = NeuralNet.from_pretrained("daphne-cornelisse/policy_S10_000_02_27")
 actions, _, _, _ = policy(obs, deterministic=True)  # 0~90 정수
 ```
 
-### 3. 좌표 변환
+### 좌표 변환
 
 FMTC 테스트베드 좌표계 ↔ GPS ↔ 시뮬레이션 좌표계 변환:
 
@@ -234,7 +253,3 @@ python -m sim.vils.server --port 8000
 | `C` | 모든 NPC 삭제 |
 | `R` | 리셋 |
 | `H` | 도움말 |
-
----
-
-[Back to Home](../index.md)
