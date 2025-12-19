@@ -29,44 +29,47 @@ SMART는 GPT-style의 next-token prediction을 사용하는 autonomous driving m
 
 ## Architecture
 
+```mermaid
+graph TD
+    subgraph Input["Input Tokenization"]
+        RT[Road Tokens<br/>Position, Direction, Type<br/>≤5m segments]
+        MT[Motion Tokens<br/>Position, Heading, Shape<br/>0.5s intervals]
+    end
+
+    subgraph Encoder["RoadNet (Encoder)"]
+        MHA[Multi-head Self-Attention<br/>+ Relative Positional Embedding]
+    end
+
+    subgraph Decoder["MotionNet (Decoder)"]
+        TA[Temporal Attention]
+        AAA[Agent-Agent Attention]
+        AMA[Agent-Map Attention]
+        TA --> AAA
+        AAA --> AMA
+    end
+
+    RT --> MHA
+    MT --> MHA
+    MHA --> TA
+    AMA --> NTP[Next Token Prediction<br/>Categorical Distribution]
+
+    style RT fill:#e1f5ff
+    style MT fill:#e1f5ff
+    style MHA fill:#fff4e1
+    style TA fill:#ffe1f5
+    style AAA fill:#ffe1f5
+    style AMA fill:#ffe1f5
+    style NTP fill:#e1ffe1
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                      SMART Pipeline                         │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  Input Tokenization                                         │
-│  ┌──────────────────┐  ┌──────────────────┐                │
-│  │   Road Tokens    │  │  Motion Tokens   │                │
-│  │                  │  │                  │                │
-│  │  - Position      │  │  - Position      │                │
-│  │  - Direction     │  │  - Heading       │                │
-│  │  - Type          │  │  - Shape         │                │
-│  │  (≤5m segments)  │  │  (0.5s intervals)│                │
-│  └────────┬─────────┘  └────────┬─────────┘                │
-│           │                     │                           │
-│           ▼                     ▼                           │
-│  ┌──────────────────────────────────────────┐              │
-│  │              RoadNet (Encoder)            │              │
-│  │       Multi-head Self-Attention           │              │
-│  │     + Relative Positional Embedding       │              │
-│  └──────────────────┬───────────────────────┘              │
-│                     │                                       │
-│                     ▼                                       │
-│  ┌──────────────────────────────────────────┐              │
-│  │           MotionNet (Decoder)             │              │
-│  │        Factorized Attention Layers        │              │
-│  │                                           │              │
-│  │  1. Temporal Attention                    │              │
-│  │  2. Agent-Agent Attention                 │              │
-│  │  3. Agent-Map Attention                   │              │
-│  └──────────────────┬───────────────────────┘              │
-│                     │                                       │
-│                     ▼                                       │
-│           Next Token Prediction                             │
-│        (Categorical Distribution)                           │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
+
+**Pipeline 설명:**
+- **Input Tokenization**: 도로와 agent motion을 discrete token으로 변환
+- **RoadNet (Encoder)**: Road token을 parallel하게 처리
+- **MotionNet (Decoder)**: Factorized attention으로 multi-agent interaction 모델링
+  - Temporal: 시간축 attention
+  - Agent-Agent: Agent 간 interaction
+  - Agent-Map: Map과의 관계
+- **Next Token Prediction**: Categorical distribution으로 다음 motion token 예측
 
 ---
 
@@ -75,7 +78,7 @@ SMART는 GPT-style의 next-token prediction을 사용하는 autonomous driving m
 ### Agent Motion Tokenization
 
 | Parameter | Value |
-|:----------|:------|
+|-----------|-------|
 | Time interval | **0.5초** |
 | Clustering | k-means (k-disks algorithm) |
 | Features | Position, heading, shape |
@@ -88,17 +91,15 @@ SMART는 GPT-style의 next-token prediction을 사용하는 autonomous driving m
 ### Road/Map Tokenization
 
 | Parameter | Value |
-|:----------|:------|
+|-----------|-------|
 | Segment length | **≤ 5m** |
 | Features | Start/end position, direction, road type |
 | Processing | **Parallel** (temporal dependency 없음) |
 
-```
-Road Token Features:
-├── Position of each point
-├── Road direction at each point
-└── Road type (lane, boundary, etc.)
-```
+**Road Token Features:**
+- Position of each point
+- Road direction at each point
+- Road type (lane, boundary, etc.)
 
 ---
 
@@ -107,14 +108,14 @@ Road Token Features:
 ### Hyperparameters
 
 | Parameter | Value |
-|:----------|:------|
-| Optimizer | AdamW |
-| Dropout | 0.1 |
-| Weight decay | 0.1 |
-| Initial LR | 0.0002 |
+|-----------|-------|
+| Optimizer | **AdamW** |
+| Dropout | **0.1** |
+| Weight decay | **0.1** |
+| Initial LR | **0.0002** |
 | LR schedule | Cosine annealing → 0 |
-| Batch size | 4 scenarios |
-| GPU memory | ≤ 30GB |
+| Batch size | **4 scenarios** |
+| GPU memory | **≤ 30GB** |
 | Loss | Cross-entropy (categorical) |
 
 ### Scaling
@@ -130,7 +131,7 @@ Road Token Features:
 ### Benchmark Results
 
 | Metric | Value |
-|:-------|:------|
+|--------|-------|
 | Single-step inference | **5 ~ 20 ms** |
 | Average | **< 10 ms** |
 | 7M model benchmark | 17.21 ms/frame |
@@ -152,8 +153,8 @@ Road Token Features:
 ### 결과
 
 | Model | Trained On | Tested On | Realism Score |
-|:------|:-----------|:----------|:--------------|
-| SMART (full) | WOMD | WOMD | 0.7591 |
+|-------|------------|-----------|---------------|
+| SMART (full) | WOMD | WOMD | **0.7591** |
 | SMART (zero-shot) | nuPlan | WOMD | **0.7210** |
 
 ### 원리
@@ -169,10 +170,10 @@ Discrete tokenization이 continuous regression 대비 domain gap 감소:
 ### WOMD Sim Agents 2024
 
 | Model | Realism | Kinematic | Interactive |
-|:------|:--------|:----------|:------------|
-| SMART-tiny (7M) | 0.7591 | 0.8039 | 0.8632 |
-| SMART-large | 0.7614 | - | - |
-| SMART-zeroshot | 0.7210 | 0.7806 | - |
+|-------|---------|-----------|-------------|
+| SMART-tiny (7M) | **0.7591** | **0.8039** | **0.8632** |
+| SMART-large | **0.7614** | - | - |
+| SMART-zeroshot | **0.7210** | **0.7806** | - |
 
 ### nuPlan Closed-loop
 
@@ -315,7 +316,7 @@ SMART/
 ## VBD vs SMART 비교
 
 | Feature | VBD | SMART |
-|:--------|:----|:------|
+|---------|-----|-------|
 | **Speed** | ~6Hz (5 DDIM steps) | **100Hz** |
 | **Traffic Light** | ✅ 지원 | ❌ 미지원 |
 | **Architecture** | Diffusion | GPT-style |

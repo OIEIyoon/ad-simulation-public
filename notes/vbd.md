@@ -28,37 +28,29 @@ VBD는 diffusion generative model을 사용하여 closed-loop 환경에서 scene
 
 ## Architecture
 
+```mermaid
+graph TD
+    A[Scene Context Encoder] --> B[Behavior Predictor]
+    B --> C[Denoiser]
+    C --> D[Joint Multi-Agent Trajectories]
+
+    A1[Agent History<br/>11 frames, 10Hz] --> A
+    A2[Map Polylines<br/>256 polylines, 30 points each] --> A
+    A3[Traffic Lights<br/>16 control points] --> A
+
+    style A fill:#e1f5ff
+    style B fill:#fff4e1
+    style C fill:#ffe1f5
+    style D fill:#e1ffe1
+
+    classDef input fill:#f0f0f0,stroke:#666,stroke-width:2px
+    class A1,A2,A3 input
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                        VBD Pipeline                         │
-├─────────────────────────────────────────────────────────────┤
-│                                                             │
-│  ┌─────────────────┐                                        │
-│  │  Scene Context  │                                        │
-│  │     Encoder     │  ← Query-centric Transformer           │
-│  │                 │                                        │
-│  │  - Agent history│                                        │
-│  │  - Map polylines│                                        │
-│  │  - Traffic lights│                                       │
-│  └────────┬────────┘                                        │
-│           │                                                 │
-│           ▼                                                 │
-│  ┌─────────────────┐                                        │
-│  │    Behavior     │  ← Multi-modal trajectory prediction   │
-│  │    Predictor    │    (static anchor 기반)                │
-│  └────────┬────────┘                                        │
-│           │                                                 │
-│           ▼                                                 │
-│  ┌─────────────────┐                                        │
-│  │    Denoiser     │  ← Diffusion model                     │
-│  │                 │    Joint control sequence 예측         │
-│  └────────┬────────┘                                        │
-│           │                                                 │
-│           ▼                                                 │
-│    Joint Multi-Agent Trajectories                           │
-│                                                             │
-└─────────────────────────────────────────────────────────────┘
-```
+
+**Pipeline 설명:**
+- **Scene Context Encoder**: Query-centric Transformer로 scene context 인코딩
+- **Behavior Predictor**: Static anchor 기반 multi-modal trajectory 예측
+- **Denoiser**: Diffusion model로 joint control sequence 생성
 
 ### 핵심 특징
 
@@ -71,25 +63,28 @@ VBD는 diffusion generative model을 사용하여 closed-loop 환경에서 scene
 ## Input Representation
 
 ### Agent History
+
 | Feature | Description |
-|:--------|:------------|
+|---------|-------------|
 | Position | (x, y) coordinates |
 | Heading | Orientation angle |
 | Velocity | Speed vector |
 | Bounding Box | (length, width) dimensions |
-| **Timesteps** | 11 frames (1초, 10Hz) |
+| **Timesteps** | **11 frames (1초, 10Hz)** |
 
 ### Map Polylines
+
 | Feature | Description |
-|:--------|:------------|
-| Polyline count | 256 polylines |
-| Points per polyline | 30 waypoints |
+|---------|-------------|
+| Polyline count | **256 polylines** |
+| Points per polyline | **30 waypoints** |
 | Content | Road geometry, lane boundaries |
 
 ### Traffic Lights
+
 | Feature | Description |
-|:--------|:------------|
-| Count | 16 traffic control points |
+|---------|-------------|
+| Count | **16 traffic control points** |
 | Content | Status (red/yellow/green), location |
 
 ---
@@ -97,11 +92,12 @@ VBD는 diffusion generative model을 사용하여 closed-loop 환경에서 scene
 ## Training Details
 
 ### Diffusion Configuration
+
 | Parameter | Value |
-|:----------|:------|
-| Diffusion steps (K) | 50 |
+|-----------|-------|
+| Diffusion steps (K) | **50** |
 | Noise schedule | **Log schedule** (not cosine) |
-| Sampling | DDIM |
+| Sampling | **DDIM** |
 
 ### Noise Schedule 선택 이유
 
@@ -122,8 +118,9 @@ VBD는 diffusion generative model을 사용하여 closed-loop 환경에서 scene
 ## Inference
 
 ### Speed
+
 | DDIM Steps | Runtime | Quality |
-|:-----------|:--------|:--------|
+|------------|---------|---------|
 | 5 steps | **~0.16s** | Good |
 | 50 steps | ~1.6s | Best |
 
@@ -146,10 +143,10 @@ Inference-time scenario editing 지원:
 VBD는 autoregressive 모델들과 비교해 적은 파라미터로 competitive한 성능 달성:
 
 | Aspect | Strength |
-|:-------|:---------|
-| Interaction modeling | Strong |
-| Map compliance | Strong |
-| Parameter efficiency | High |
+|--------|----------|
+| Interaction modeling | **Strong** |
+| Map compliance | **Strong** |
+| Parameter efficiency | **High** |
 
 ---
 
