@@ -1,8 +1,7 @@
 # AD Simulation Notes
 
-Welcome to my notes.
+FMTC 자율주행 시뮬레이션 관련 노트.
 
 ## Contents
 
-- [Note 1](notes/note1.md)
-- [Note 2](notes/note2.md)
+- [GPUDrive to VILS: 자율주행 시뮬레이션 구축기](notes/gpudrive-to-vils.md)
