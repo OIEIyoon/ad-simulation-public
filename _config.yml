@@ -1,7 +1,7 @@
 remote_theme: just-the-docs/just-the-docs
 
-title: AD Simulation Notes
-description: FMTC 자율주행 시뮬레이션 노트
+title: AD Simulation
+description: FMTC 자율주행 시뮬레이션 연구 노트
 
 # 검색 활성화
 search_enabled: true
@@ -9,20 +9,31 @@ search:
   heading_level: 2
   previews: 3
 
-# 색상 테마 (dark / light)
+# 색상 테마
 color_scheme: dark
 
 # 네비게이션
 nav_sort: case_insensitive
+back_to_top: true
+back_to_top_text: "Back to top"
 
 # Mermaid 다이어그램
 mermaid:
   version: "10.6.0"
 
-# Footer
+# Footer - 최소화
 gh_edit_link: false
+footer_content: ""
 
-# 기타
-aux_links:
-  "GitHub":
-    - "https://github.com/OIEIyoon/ad-simulation-public"
+# 상단 링크 제거 (aux_links 없음)
+
+# Giscus 댓글
+giscus:
+  repo: "OIEIyoon/ad-simulation-public"
+  repo_id: ""
+  category: "Announcements"
+  category_id: ""
+  mapping: "pathname"
+  reactions_enabled: "1"
+  theme: "dark"
+  lang: "ko"

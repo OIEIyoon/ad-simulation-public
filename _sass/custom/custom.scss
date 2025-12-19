@@ -1,0 +1,34 @@
+// 커스텀 스타일
+
+// Footer의 기본 텍스트 숨기기 (This site uses Just the Docs, etc.)
+.site-footer {
+  .site-footer-content {
+    // 기본 footer 텍스트 숨기기
+    > span:first-child {
+      display: none;
+    }
+  }
+}
+
+// "Edit this page on GitHub" 링크 숨기기
+.page-footer {
+  display: none;
+}
+
+// Giscus 컨테이너 스타일
+.giscus-container {
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+// 코드 블록 개선
+.highlight {
+  border-radius: 8px;
+}
+
+// 테이블 스타일 개선
+table {
+  border-radius: 8px;
+  overflow: hidden;
+}
