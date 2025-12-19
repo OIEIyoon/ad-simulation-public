@@ -24,10 +24,8 @@ E2E 자율주행 프로젝트 - Simulation 파트 연구 노트
 |------|-------------|
 | [Waymax vs GPUDrive](notes/waymax_vs_gpudrive) | 자율주행 시뮬레이터 비교 분석 (아키텍처, 성능, 기능) |
 | [GPUDrive Observation](notes/gpudrive-observation) | GPUDrive Policy 입력 observation 구조 (2984차원) |
-| [VBD](notes/vbd) | Diffusion 기반 multi-agent traffic simulation (WOMD 2024 2위) |
-| [SMART](notes/smart) | GPT-style next-token prediction (WOMD 2024 1위, 100Hz real-time) |
-| [VBD vs SMART](notes/vbd-vs-smart) | WOMD Challenge 상위 2개 모델 비교 (method, training, inference) |
-| [VILS Policy Options](notes/vils-policy-options) | VILS 프로젝트를 위한 policy 선택 분석 및 추천 |
+| [VBD](notes/vbd) | Diffusion 기반 multi-agent simulation (WOMD 2024 2위, 6Hz, High controllability) |
+| [SMART](notes/smart) | GPT-style next-token prediction (WOMD 2024 1위, 100Hz, Zero-shot generalization) |
 
 ---
 
