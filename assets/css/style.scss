@@ -1,0 +1,17 @@
+---
+---
+
+@import "jekyll-theme-cayman";
+
+/* Hide GitHub links and footer info */
+.btn {
+  display: none !important;
+}
+
+.site-footer-credits {
+  display: none !important;
+}
+
+.site-footer-owner {
+  display: none !important;
+}
