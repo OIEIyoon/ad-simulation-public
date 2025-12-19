@@ -7,9 +7,6 @@ nav_order: 3
 
 # VBD: Versatile Behavior Diffusion for Generalized Traffic Agent Simulation
 
-> 작성일: 2025-12-19
-> 목적: Multi-agent traffic simulation을 위한 diffusion 기반 policy 분석
-
 > **Paper**: [arXiv:2404.02524](https://arxiv.org/abs/2404.02524)
 > **Code**: [github.com/SafeRoboticsLab/VBD](https://github.com/SafeRoboticsLab/VBD)
 > **Project**: [sites.google.com/view/versatile-behavior-diffusion](https://sites.google.com/view/versatile-behavior-diffusion)
@@ -17,16 +14,18 @@ nav_order: 3
 
 ## Overview
 
-VBD는 diffusion generative model을 사용하여 closed-loop 환경에서 scene-consistent하고 controllable한 multi-agent interaction을 예측하는 traffic scenario generation framework이다.
+VBD는 diffusion generative model을 사용하는 multi-agent traffic simulation framework이다. Closed-loop 환경에서 scene-consistent하고 controllable한 agent interaction을 생성한다.
 
 **주요 성과:**
-- Waymo Open Sim Agents Challenge 2024 **2위**
+- Waymo Open Sim Agents Challenge 2024 **2위** (CVPR 2024 WAD)
 - RSS 2024 Workshop (AVAS) **Best Paper Award**
 - Waymo Sim Agents Benchmark SOTA
 
 ---
 
-## Architecture
+## Method
+
+### Architecture
 
 ```mermaid
 graph TD
@@ -47,106 +46,100 @@ graph TD
     class A1,A2,A3 input
 ```
 
-**Pipeline 설명:**
-- **Scene Context Encoder**: Query-centric Transformer로 scene context 인코딩
-- **Behavior Predictor**: Static anchor 기반 multi-modal trajectory 예측
-- **Denoiser**: Diffusion model로 joint control sequence 생성
+### Core Components
 
-### 핵심 특징
+**1. Scene Context Encoder**
+- Query-centric Transformer architecture
+- Agent history, map polylines, traffic light states 인코딩
+- Translation invariance를 위한 local coordinate 변환
 
-1. **Action Space 기반**: State space가 아닌 action space (acceleration, yaw rate)에서 동작
-2. **Query-centric Encoding**: Translation invariance를 위해 local coordinate로 변환
-3. **Rollout-based Supervision**: Noise prediction 대신 trajectory rollout supervision 사용
+**2. Behavior Predictor**
+- Static anchor 기반 multi-modal trajectory 예측
+- 가능한 agent behavior의 prior distribution 제공
 
----
+**3. Diffusion Denoiser**
+- Action space (acceleration, yaw rate)에서 동작
+- Joint control sequence 생성 → trajectory rollout
+- 50-step DDIM sampling
 
-## Input Representation
+### Key Design Choices
 
-### Agent History
-
-| Feature | Description |
-|---------|-------------|
-| Position | (x, y) coordinates |
-| Heading | Orientation angle |
-| Velocity | Speed vector |
-| Bounding Box | (length, width) dimensions |
-| **Timesteps** | **11 frames (1초, 10Hz)** |
-
-### Map Polylines
-
-| Feature | Description |
-|---------|-------------|
-| Polyline count | **256 polylines** |
-| Points per polyline | **30 waypoints** |
-| Content | Road geometry, lane boundaries |
-
-### Traffic Lights
-
-| Feature | Description |
-|---------|-------------|
-| Count | **16 traffic control points** |
-| Content | Status (red/yellow/green), location |
+| Decision | Choice | Reason |
+|----------|--------|--------|
+| Prediction space | **Action space** | State space 대비 dynamics consistency 향상 |
+| Supervision | **Trajectory rollout** | Direct noise prediction은 map adherence 실패 |
+| Noise schedule | **Log schedule** | Cosine 대비 short-cut learning 방지 |
 
 ---
 
-## Training Details
+## Training
 
-### Diffusion Configuration
+### Dataset
+
+- **Waymo Open Motion Dataset (WOMD) v1.2**
+- Scenario-based format
+- 11-frame history (1초) + 80-frame future (8초)
+- 44,920 test scenarios
+
+### Training Configuration
 
 | Parameter | Value |
 |-----------|-------|
 | Diffusion steps (K) | **50** |
-| Noise schedule | **Log schedule** (not cosine) |
-| Sampling | **DDIM** |
+| Noise schedule | **Log schedule** |
+| Sampling method | **DDIM** |
+| Supervision | Trajectory rollout loss |
+| Platform | Waymax simulator |
 
-### Noise Schedule 선택 이유
-
-기존 cosine schedule 대신 log schedule 사용:
-- 적절한 signal-to-noise ratio 유지
-- "Short-cut learning" 방지
-- Closed-loop에서 더 나은 성능
-
-### Training Supervision
-
-```
-❌ Direct noise prediction (ε) → 의미있는 agent behavior 생성 실패
-✅ Trajectory rollout supervision → Map adherence 유지
-```
+**Training Strategy:**
+- Rollout-based supervision: 예측된 action을 dynamics model로 rollout → ground truth와 비교
+- Map adherence 유지를 위한 핵심 설계
 
 ---
 
 ## Inference
 
-### Speed
+### Performance
 
-| DDIM Steps | Runtime | Quality |
-|------------|---------|---------|
-| 5 steps | **~0.16s** | Good |
-| 50 steps | ~1.6s | Best |
+| DDIM Steps | Latency | Throughput | Quality |
+|------------|---------|------------|---------|
+| **5 steps** | **~0.16s** | **~6Hz** | Good |
+| 50 steps | ~1.6s | ~0.6Hz | Best |
 
-- 5 steps로도 generation quality와 real-time performance의 균형 달성
-- **~6Hz** 실시간 가능 (5 steps 기준)
+**Real-time Capability:**
+- 5-step sampling으로 generation quality와 speed 균형 달성
+- Single scenario 기준 ~6Hz 가능
 
 ### Controllability
 
-Inference-time scenario editing 지원:
-- Behavior prior로 agent 행동 조절
+Inference-time editing 지원:
+- Behavior prior를 통한 agent 행동 조절
 - Model-based optimization과 결합 가능
 - Safety-critical scenario 생성
 
 ---
 
-## Benchmark Results
+## Benchmark & Validation
 
-### Waymo Sim Agents (44,920 test scenarios)
+### Waymo Sim Agents Challenge 2024
 
-VBD는 autoregressive 모델들과 비교해 적은 파라미터로 competitive한 성능 달성:
+**Platform**: Waymo Open Motion Dataset (44,920 test scenarios)
 
-| Aspect | Strength |
-|--------|----------|
-| Interaction modeling | **Strong** |
-| Map compliance | **Strong** |
-| Parameter efficiency | **High** |
+**Results**:
+- **2위** (CVPR 2024 Workshop on Autonomous Driving)
+- Autoregressive 모델 대비 적은 파라미터로 competitive 성능
+- Interaction modeling, map compliance 우수
+
+### Evaluation Metrics
+
+| Metric Category | Performance |
+|-----------------|-------------|
+| Realism | SOTA |
+| Kinematic feasibility | Strong |
+| Interactive behavior | Strong |
+| Map compliance | Strong |
+
+**Validation Environment**: Waymax closed-loop simulator
 
 ---
 
@@ -192,52 +185,12 @@ python script/test.py \
     --save_simulation
 ```
 
----
-
-## Code Structure
-
+### Example Notebooks
 ```
-VBD/
-├── config/           # Configuration files
-├── script/
-│   ├── train.py      # Training script
-│   ├── test.py       # Testing script
-│   └── extract_data.py  # Data preprocessing
-├── vbd/              # Core implementation
-└── example/          # Jupyter notebooks
-    ├── unguided_generation.ipynb
-    └── goal_guided_generation.ipynb
+example/
+├── unguided_generation.ipynb
+└── goal_guided_generation.ipynb
 ```
-
----
-
-## VILS 적용 고려사항
-
-### 장점
-- ✅ **Traffic light 지원** (16 control points)
-- ✅ Closed-loop multi-agent interaction
-- ✅ 오픈소스 (Apache-2.0)
-- ✅ Controllable generation
-
-### 단점/이슈
-- ⚠️ Pretrained checkpoint 공개 여부 불명확 (GitHub 확인 필요)
-- ⚠️ Waymax 의존성
-- ⚠️ ~6Hz (10Hz 목표 대비 부족할 수 있음)
-- ⚠️ WOMD format으로 맵 변환 필요
-
-### Custom Map (FMTC) 적용 시 필요 작업
-
-1. **Map Format 변환**
-   - FMTC HD Map → Waymo polyline format
-   - 256 polylines, 30 waypoints/polyline
-
-2. **Traffic Light 연동**
-   - 16개 traffic control points format 맞추기
-   - Status encoding (red/yellow/green)
-
-3. **Agent Initialization**
-   - Spawn position, heading, velocity 설정
-   - Bounding box dimensions
 
 ---
 

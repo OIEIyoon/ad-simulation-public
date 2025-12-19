@@ -7,9 +7,6 @@ nav_order: 4
 
 # SMART: Scalable Multi-agent Real-time Motion Generation via Next-token Prediction
 
-> 작성일: 2025-12-19
-> 목적: Multi-agent motion generation을 위한 GPT-style policy 분석
-
 > **Paper**: [arXiv:2405.15677](https://arxiv.org/abs/2405.15677)
 > **Code**: [github.com/rainmaker22/SMART](https://github.com/rainmaker22/SMART)
 > **Project**: [smart-motion.github.io/smart](https://smart-motion.github.io/smart/)
@@ -17,17 +14,19 @@ nav_order: 4
 
 ## Overview
 
-SMART는 GPT-style의 next-token prediction을 사용하는 autonomous driving motion generation 프레임워크이다. Vectorized map과 agent trajectory를 discrete token으로 변환하여 decoder-only transformer로 처리한다.
+SMART는 GPT-style next-token prediction을 사용하는 multi-agent motion generation framework이다. Vectorized map과 agent trajectory를 discrete token으로 변환하여 decoder-only transformer로 처리한다.
 
 **주요 성과:**
 - Waymo Open Sim Agents Challenge 2024 **1위** (CVPR 2024 WAD Workshop)
 - NeurIPS 2024 accepted
-- nuPlan closed-loop planning SOTA (learning-based 중)
+- nuPlan closed-loop planning SOTA (learning-based)
 - **Zero-shot generalization**: nuPlan → WOMD
 
 ---
 
-## Architecture
+## Method
+
+### Architecture
 
 ```mermaid
 graph TD
@@ -62,50 +61,52 @@ graph TD
     style NTP fill:#e1ffe1
 ```
 
-**Pipeline 설명:**
-- **Input Tokenization**: 도로와 agent motion을 discrete token으로 변환
-- **RoadNet (Encoder)**: Road token을 parallel하게 처리
-- **MotionNet (Decoder)**: Factorized attention으로 multi-agent interaction 모델링
-  - Temporal: 시간축 attention
-  - Agent-Agent: Agent 간 interaction
-  - Agent-Map: Map과의 관계
-- **Next Token Prediction**: Categorical distribution으로 다음 motion token 예측
+### Core Components
+
+**1. Input Tokenization**
+- **Road Tokens**: ≤5m segments, parallel processing (no temporal dependency)
+- **Motion Tokens**: 0.5초 interval, k-means clustering (k-disks)
+- Agent type별 별도 vocabulary (Vehicle, Pedestrian, Cyclist)
+
+**2. RoadNet (Encoder)**
+- Multi-head self-attention으로 road network 인코딩
+- Relative positional embedding
+- Parallel processing
+
+**3. MotionNet (Decoder)**
+- Factorized attention layers:
+  - **Temporal**: 시간축 dependency
+  - **Agent-Agent**: Multi-agent interaction
+  - **Agent-Map**: Map-aware navigation
+
+**4. Next Token Prediction**
+- Categorical distribution over vocabulary
+- Cross-entropy loss
+
+### Key Design Choices
+
+| Decision | Choice | Reason |
+|----------|--------|--------|
+| Representation | **Discrete tokens** | Continuous regression 대비 domain gap 감소 |
+| Token interval | **0.5초** | Compounding error와 resolution trade-off |
+| Training strategy | **Top-k sampling** | Exact match 대신 closest tokens 사용 → robustness |
+| Attention | **Factorized** | Temporal/Agent/Map 분리 → efficiency |
 
 ---
 
-## Tokenization
+## Training
 
-### Agent Motion Tokenization
+### Dataset
 
-| Parameter | Value |
-|-----------|-------|
-| Time interval | **0.5초** |
-| Clustering | k-means (k-disks algorithm) |
-| Features | Position, heading, shape |
-| Vocab | Agent type별 별도 vocabulary (Vehicle, Pedestrian, Cyclist) |
+**Primary Training:**
+- **Waymo Open Motion Dataset (WOMD)**
+- Scenario-based format
+- 1 billion motion tokens 수집
 
-**Compounding Error 방지:**
-- Training 시 exact match 대신 **top-k closest tokens**에서 sampling
-- Noise injection으로 robustness 향상
+**Zero-shot Evaluation:**
+- **nuPlan** 데이터셋으로 학습 → WOMD 직접 평가
 
-### Road/Map Tokenization
-
-| Parameter | Value |
-|-----------|-------|
-| Segment length | **≤ 5m** |
-| Features | Start/end position, direction, road type |
-| Processing | **Parallel** (temporal dependency 없음) |
-
-**Road Token Features:**
-- Position of each point
-- Road direction at each point
-- Road type (lane, boundary, etc.)
-
----
-
-## Training Details
-
-### Hyperparameters
+### Training Configuration
 
 | Parameter | Value |
 |-----------|-------|
@@ -118,86 +119,75 @@ graph TD
 | GPU memory | **≤ 30GB** |
 | Loss | Cross-entropy (categorical) |
 
-### Scaling
+### Scaling Law
 
-1 billion motion tokens 수집하여 학습:
+- 1M ~ 101M 파라미터 모델 학습
 - Power-law scaling: β = -0.157
-- 1M ~ 101M 파라미터 검증
+- 1 billion motion tokens로 검증
 
 ---
 
-## Inference Speed
+## Inference
 
-### Benchmark Results
+### Performance
 
-| Metric | Value |
-|--------|-------|
-| Single-step inference | **5 ~ 20 ms** |
-| Average | **< 10 ms** |
-| 7M model benchmark | 17.21 ms/frame |
+| Metric | Value | Notes |
+|--------|-------|-------|
+| Single-step latency | **5 ~ 20 ms** | Hardware dependent |
+| Average latency | **< 10 ms** | **100Hz 가능** |
+| 7M model (benchmark) | **17.21 ms/frame** | |
 
-**Real-time 성능:**
-- 10ms 평균 → **100Hz** 가능
-- 20ms 최대 → **50Hz** 가능
-- **VILS 10Hz 요구사항 충족**
+**Real-time Capability:**
+- 10ms 평균 → **100Hz** throughput
+- 20ms 최악 → **50Hz** guaranteed
+- Autoregressive이지만 efficient factorized attention
 
----
+### Model Variants
 
-## Zero-shot Generalization
-
-### 방법
-
-1. nuPlan 데이터셋으로만 학습
-2. WOMD에서 직접 evaluation (fine-tuning 없음)
-
-### 결과
-
-| Model | Trained On | Tested On | Realism Score |
-|-------|------------|-----------|---------------|
-| SMART (full) | WOMD | WOMD | **0.7591** |
-| SMART (zero-shot) | nuPlan | WOMD | **0.7210** |
-
-### 원리
-
-Discrete tokenization이 continuous regression 대비 domain gap 감소:
-- Position을 discrete token으로 양자화
-- Dataset-specific한 continuous value 의존성 제거
+| Model | Parameters | Performance |
+|-------|------------|-------------|
+| SMART-tiny | **7M** | Fast, competitive |
+| SMART-medium | - | 공개 예정 (non-Waymo data) |
+| SMART-large | - | Best performance |
 
 ---
 
-## Benchmark Results
+## Benchmark & Validation
 
-### WOMD Sim Agents 2024
+### 1. Waymo Open Sim Agents Challenge 2024
+
+**Platform**: Waymo Open Motion Dataset (44,920 test scenarios)
+
+**Results**:
 
 | Model | Realism | Kinematic | Interactive |
 |-------|---------|-----------|-------------|
 | SMART-tiny (7M) | **0.7591** | **0.8039** | **0.8632** |
 | SMART-large | **0.7614** | - | - |
-| SMART-zeroshot | **0.7210** | **0.7806** | - |
 
-### nuPlan Closed-loop
+- **1위** (CVPR 2024 Workshop on Autonomous Driving)
+- SOTA across most metrics
 
+### 2. nuPlan Closed-loop Planning
+
+**Platform**: nuPlan benchmark (val14)
+
+**Results**:
 - Learning-based algorithms 중 **SOTA**
-- val14 benchmark
+- Real-world driving scenario 검증
 
----
+### 3. Zero-shot Generalization
 
-## Traffic Light Support
+**Experiment**: nuPlan 학습 → WOMD 평가 (fine-tuning 없음)
 
-### 현재 상태
+| Model | Train Dataset | Test Dataset | Realism Score |
+|-------|---------------|--------------|---------------|
+| SMART (full) | WOMD | WOMD | **0.7591** |
+| SMART (zero-shot) | **nuPlan** | **WOMD** | **0.7210** |
 
-**⚠️ 명시적으로 다루지 않음**
-
-논문과 코드에서 traffic light 처리에 대한 언급 없음:
-- Road token에 traffic light status 포함 여부 불명확
-- WOMD preprocessing 과정에서 처리될 수 있음 (확인 필요)
-
-### VILS 적용 시 고려사항
-
-Traffic light이 중요한 경우:
-1. 코드 분석하여 input에 추가 가능한지 확인
-2. Road token type에 traffic light state 추가 시도
-3. 또는 VBD 사용 고려
+**Key Insight**:
+- Discrete tokenization이 continuous value 의존성 제거
+- Domain gap 감소 → generalization 향상
 
 ---
 
@@ -248,85 +238,13 @@ python train.py --config configs/train/train_scalable.yaml
 python eval.py --config ${config_path} --pretrain_ckpt ${ckpt_path}
 ```
 
----
-
-## Pretrained Checkpoints
-
-### 공개 상태
+### Pretrained Checkpoints
 
 > "We will release the model parameters of a medium-sized model **not trained on Waymo data**. Users can fine-tune this model with Waymo data as needed."
 
-- WOMD 데이터 없이 학습된 medium model 공개 예정
-- Waymo 참가 약관 준수를 위함
-- Fine-tuning 필요
-
----
-
-## Code Structure
-
-```
-SMART/
-├── smart/              # Core implementation
-├── configs/            # Configuration files
-│   └── train/
-│       └── train_scalable.yaml
-├── scripts/            # Utility scripts
-├── data/               # Dataset directory
-├── data_preprocess.py  # Preprocessing
-├── train.py            # Training
-├── val.py              # Validation
-└── eval.py             # Evaluation
-```
-
----
-
-## VILS 적용 고려사항
-
-### 장점
-
-- ✅ **Real-time** (< 10ms, 100Hz 가능)
-- ✅ Multi-agent 동시 처리
-- ✅ Zero-shot generalization
-- ✅ 오픈소스 (Apache-2.0)
-- ✅ Checkpoint 공개 예정
-
-### 단점/이슈
-
-- ⚠️ **Traffic light 미지원** (명시적 처리 없음)
-- ⚠️ Checkpoint이 WOMD 데이터 없이 학습됨 (fine-tuning 필요)
-- ⚠️ WOMD format으로 맵 변환 필요
-
-### Custom Map (FMTC) 적용 시 필요 작업
-
-1. **Map Tokenization**
-   - FMTC HD Map → Road tokens
-   - ≤ 5m segment로 분할
-   - (position, direction, type) 추출
-
-2. **Agent Initialization**
-   - Motion token vocabulary 확인
-   - Initial token 설정
-
-3. **Traffic Light 처리 (추가 개발 필요)**
-   - Road token에 traffic light state 추가
-   - 또는 별도 conditioning 방법 개발
-
----
-
-## VBD vs SMART 비교
-
-| Feature | VBD | SMART |
-|---------|-----|-------|
-| **Speed** | ~6Hz (5 DDIM steps) | **100Hz** |
-| **Traffic Light** | ✅ 지원 | ❌ 미지원 |
-| **Architecture** | Diffusion | GPT-style |
-| **Checkpoint** | 불명확 | 공개 예정 |
-| **Controllability** | ✅ High | ⚠️ Limited |
-
-**추천:**
-- Traffic light 중요 → **VBD**
-- Real-time 우선 → **SMART**
-- 둘 다 필요 → SMART + traffic light 추가 개발
+- WOMD 없이 학습된 medium model 공개 예정
+- Waymo 참가 약관 준수
+- Fine-tuning 가능
 
 ---
 
