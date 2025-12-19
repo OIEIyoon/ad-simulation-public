@@ -15,6 +15,10 @@ color_scheme: dark
 # 네비게이션
 nav_sort: case_insensitive
 
+# Mermaid 다이어그램
+mermaid:
+  version: "10.6.0"
+
 # Footer
 gh_edit_link: false
 
