@@ -1,6 +1,13 @@
+---
+title: Waymax vs GPUDrive
+layout: default
+parent: Notes
+nav_order: 1
+---
+
 # Waymax vs GPUDrive: 자율주행 시뮬레이터 비교 연구노트
 
-> 작성일: 2024-12-19
+> 작성일: 2025-12-19
 > 목적: 두 시뮬레이터의 아키텍처, 설계 철학, 성능 특성 비교 분석
 
 ---
