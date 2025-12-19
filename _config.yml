@@ -1,7 +1,7 @@
 remote_theme: just-the-docs/just-the-docs
 
-title: AD Simulation
-description: FMTC 자율주행 시뮬레이션 연구 노트
+title: Autonomous Driving Notes
+description: 자율주행 연구노트
 
 # 검색 활성화
 search_enabled: true

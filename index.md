@@ -4,9 +4,9 @@ layout: home
 nav_order: 1
 ---
 
-# AD Simulation Notes
+# Autonomous Driving Notes
 
-FMTC 자율주행 시뮬레이션 관련 노트.
+자율주행 연구노트.
 
 ---
 
