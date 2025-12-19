@@ -4,12 +4,21 @@ layout: home
 nav_order: 1
 ---
 
-# Autonomous Driving Notes
+# E2E 자율주행 - Simulation
 
-자율주행 연구노트.
+E2E 자율주행 프로젝트 - Simulation 파트 연구 노트
 
 ---
 
-## Contents
+## Task Overview
 
-- [GPUDrive to VILS: 자율주행 시뮬레이션 구축기](notes/gpudrive-to-vils.md)
+| Task | Objective | Link |
+|------|-----------|------|
+| VILS 구축 | GPUDrive 기반 Vehicle-In-the-Loop Simulation 시스템 구축 | [상세](notes/gpudrive-to-vils) |
+
+---
+
+## Quick Links
+
+- [Tasks](tasks/) - 진행중인 연구 태스크
+- [Notes](notes/) - 상세 기술 문서
