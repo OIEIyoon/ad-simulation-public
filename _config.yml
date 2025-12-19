@@ -10,7 +10,7 @@ search:
   previews: 3
 
 # 색상 테마
-color_scheme: dark
+color_scheme: light
 
 # 네비게이션
 nav_sort: case_insensitive

@@ -1,34 +1,203 @@
-// 커스텀 스타일
+// 커스텀 스타일 - 고급스러운 라이트 테마
 
-// Footer의 기본 텍스트 숨기기 (This site uses Just the Docs, etc.)
+// ========================================
+// Footer 완전 숨기기
+// ========================================
 .site-footer {
-  .site-footer-content {
-    // 기본 footer 텍스트 숨기기
-    > span:first-child {
-      display: none;
-    }
-  }
+  display: none !important;
 }
 
 // "Edit this page on GitHub" 링크 숨기기
 .page-footer {
-  display: none;
+  display: none !important;
 }
 
-// Giscus 컨테이너 스타일
+// ========================================
+// 타이포그래피 개선
+// ========================================
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  line-height: 1.7;
+  color: #2d3748;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: #1a202c;
+  letter-spacing: -0.02em;
+}
+
+// ========================================
+// 메인 컨텐츠 영역
+// ========================================
+.main-content {
+  max-width: 900px;
+
+  h1 {
+    font-size: 2.25rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid #e2e8f0;
+  }
+
+  h2 {
+    font-size: 1.5rem;
+    margin-top: 2.5rem;
+    color: #2d3748;
+  }
+
+  h3 {
+    font-size: 1.25rem;
+    color: #4a5568;
+  }
+}
+
+// ========================================
+// 코드 블록 - 세련된 스타일
+// ========================================
+.highlight {
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+  border: 1px solid #e2e8f0;
+
+  pre {
+    padding: 1.25rem;
+    font-size: 0.875rem;
+    line-height: 1.6;
+  }
+}
+
+code {
+  font-family: "SF Mono", "Fira Code", "Monaco", monospace;
+  font-size: 0.875em;
+  background-color: #f7fafc;
+  padding: 0.2em 0.4em;
+  border-radius: 4px;
+  color: #e53e3e;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: inherit;
+}
+
+// ========================================
+// 테이블 - 깔끔한 스타일
+// ========================================
+table {
+  border-radius: 10px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  border: 1px solid #e2e8f0;
+
+  th {
+    background-color: #f7fafc;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: #4a5568;
+  }
+
+  td, th {
+    padding: 0.875rem 1rem;
+    border-color: #e2e8f0;
+  }
+
+  tr:hover {
+    background-color: #f7fafc;
+  }
+}
+
+// ========================================
+// 링크 스타일
+// ========================================
+a {
+  color: #3182ce;
+  text-decoration: none;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: #2c5282;
+    text-decoration: underline;
+  }
+}
+
+// ========================================
+// 사이드바 개선
+// ========================================
+.side-bar {
+  background-color: #fafafa;
+  border-right: 1px solid #e2e8f0;
+}
+
+.site-title {
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.nav-list-link {
+  font-weight: 500;
+
+  &.active {
+    font-weight: 600;
+    color: #2b6cb0;
+  }
+}
+
+// ========================================
+// 검색바 개선
+// ========================================
+.search-input {
+  border-radius: 8px;
+  border: 1px solid #e2e8f0;
+
+  &:focus {
+    border-color: #3182ce;
+    box-shadow: 0 0 0 3px rgba(49, 130, 206, 0.1);
+  }
+}
+
+// ========================================
+// Giscus 컨테이너
+// ========================================
 .giscus-container {
   max-width: 800px;
-  margin-left: auto;
-  margin-right: auto;
+  margin: 3rem auto 0;
+  padding-top: 2rem;
+  border-top: 1px solid #e2e8f0;
 }
 
-// 코드 블록 개선
-.highlight {
-  border-radius: 8px;
+// ========================================
+// Mermaid 다이어그램 개선
+// ========================================
+.mermaid {
+  background: #fafafa;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
 }
 
-// 테이블 스타일 개선
-table {
-  border-radius: 8px;
-  overflow: hidden;
+// ========================================
+// Blockquote 스타일
+// ========================================
+blockquote {
+  border-left: 4px solid #3182ce;
+  background-color: #f7fafc;
+  padding: 1rem 1.5rem;
+  border-radius: 0 8px 8px 0;
+  color: #4a5568;
+  font-style: normal;
+
+  p {
+    margin: 0;
+  }
+}
+
+// ========================================
+// 페이지 상단 여백
+// ========================================
+.main {
+  padding-top: 2rem;
 }
