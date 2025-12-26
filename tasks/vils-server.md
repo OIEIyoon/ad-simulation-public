@@ -87,4 +87,4 @@ FMTC PG에서 Ego vehicle이 가상 NPC들과 상호작용하며 자율주행 �
 
 | 날짜 | 내용 |
 |------|------|
-| [2024-12-26](vils-server-progress-2024-12-26) | HD Map 기반 NPC 자율주행 1차 구현 (IDM + Lookahead) |
+| [2025-12-26](vils-server-progress-2025-12-26) | Rule-based Mock Policy로 Server Infrastructure 검증 |
