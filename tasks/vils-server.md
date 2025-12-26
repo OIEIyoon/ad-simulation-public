@@ -28,17 +28,17 @@ flowchart LR
         B <--> C[NPC Policy]
     end
 
-    D[Ego Vehicle<br/>Client] <--> |WebSocket<br/>10Hz| B
+    D[Ego Vehicle<br/>Client] <--> |WebSocket| B
 
-    C --> C1[Rule-based<br/>IDM]
-    C --> C2[Learned<br/>SMART]
+    C -.- C1[Phase 1: Rule-based<br/>IDM ✓]
+    C -.- C2[Phase 2: Learned<br/>SMART]
 ```
 
 | Component | Role |
 |-----------|------|
 | Simulation Engine | Vehicle dynamics, collision, state management |
 | Map & Road Network | FMTC HD Map → Lane Graph, Route generation |
-| NPC Policy | NPC 행동 결정 (Rule-based 또는 Learned) |
+| NPC Policy | NPC 행동 결정 (현재 Rule-based → Learned로 교체 예정) |
 | WebSocket API | Client(실차)와 실시간 양방향 통신 |
 
 ### Client 통신
@@ -49,7 +49,7 @@ Server → Client: NPC states (position, velocity, heading, ...)
 ```
 
 - Protocol: WebSocket (FastAPI)
-- Frequency: 10Hz
+- **Client-driven**: Client가 ego_state 보낼 때마다 Server가 step 실행 후 npc_states 응답
 - Format: JSON
 
 ---
