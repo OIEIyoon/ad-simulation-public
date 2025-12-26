@@ -1,12 +1,12 @@
 ---
-title: Mock Policy 구현
+title: IDM 기반 Rule-based Policy
 layout: default
-parent: VILS Server 개발
+parent: ViLS - Traffic Simulation Server
 nav_order: 1
 date: 2025-12-26
 ---
 
-# Mock Policy 구현
+# IDM 기반 Rule-based Policy
 <small>2025-12-26</small>
 
 Rule-based Mock Policy를 통한 Server Infrastructure 검증

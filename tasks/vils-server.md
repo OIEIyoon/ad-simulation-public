@@ -12,39 +12,25 @@ has_children: true
 
 ---
 
-## Architecture
-
-```mermaid
-flowchart LR
-    subgraph Server
-        A[Map & Road Network] --> B[Simulation Engine]
-        B --> C[NPC Policy]
-        C --> B
-    end
-
-    D[Ego Vehicle] <--> |WebSocket| B
-```
-
----
-
-## Components
+## Tasks
 
 ### Server Infrastructure
-- Simulation Engine (Vehicle Dynamics, Collision)
-- Map & Road Network (FMTC → Lane Graph, Route)
-- GUI Visualization (Pygame)
-- WebSocket API (FastAPI)
+- [x] Simulation Engine (Vehicle Dynamics, Bicycle Model)
+- [x] Map & Road Network (FMTC → Lane Graph, Route Generation)
+- [x] GUI Visualization (Pygame 기반 렌더러)
+- [x] WebSocket API (FastAPI, 10Hz)
 
 ### NPC Policy
-- **Current**: Rule-based Mock Policy (IDM + Lookahead)
-- **Target**: Learned Policy (SMART 등)
+- [x] Rule-based Policy (IDM + Lookahead) - 서버 인프라 검증용
+- [ ] Learned Policy (SMART 등) - Neural Planner 통합
 
 ### Ego Integration
-- 실차 상태 주입 (Position, Velocity, Heading)
-- NPC의 Ego 인식 및 반응
+- [ ] 실차 상태 주입 (Position, Velocity, Heading)
+- [ ] NPC의 Ego 인식 및 반응
+- [ ] 시나리오 관리
 
 ---
 
 ## Subtasks
 
-- [Mock Policy 구현](vils-server-progress-2025-12-26) (2025-12-26)
+- [IDM 기반 Rule-based Policy](vils-server-progress-2025-12-26) (2025-12-26)
