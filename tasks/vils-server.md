@@ -3,6 +3,7 @@ title: VILS Server 개발
 layout: default
 parent: Tasks
 nav_order: 1
+has_children: true
 ---
 
 # VILS Server 개발
@@ -79,3 +80,11 @@ FMTC PG에서 Ego vehicle이 가상 NPC들과 상호작용하며 자율주행 �
 
 - TODO: 특정 시나리오 정의 및 로드
 - TODO: 시나리오별 NPC 배치/행동 패턴
+
+---
+
+## 진행 보고
+
+| 날짜 | 내용 |
+|------|------|
+| [2024-12-26](vils-server-progress-2024-12-26) | HD Map 기반 NPC 자율주행 1차 구현 (IDM + Lookahead) |
