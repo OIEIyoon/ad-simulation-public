@@ -14,7 +14,7 @@ E2E 자율주행 프로젝트 - Simulation 파트 연구 노트
 
 | Task | Objective | Status |
 |------|-----------|--------|
-| [VILS Server](tasks/vils-server) | FMTC PG용 가상 NPC 시뮬레이션 서버 구축 | 진행중 |
+| [ViLS - Traffic Simulation Server](tasks/vils-server) | 실차-가상NPC 상호작용 시뮬레이션 서버 | 진행중 |
 
 ---
 
