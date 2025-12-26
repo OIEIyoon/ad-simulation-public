@@ -83,8 +83,6 @@ FMTC PG에서 Ego vehicle이 가상 NPC들과 상호작용하며 자율주행 �
 
 ---
 
-## 진행 보고
+## Subtasks
 
-| 날짜 | 내용 |
-|------|------|
-| [2025-12-26](vils-server-progress-2025-12-26) | Rule-based Mock Policy로 Server Infrastructure 검증 |
+- [Mock Policy 구현](vils-server-progress-2025-12-26) (2025-12-26)

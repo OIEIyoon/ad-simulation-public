@@ -1,11 +1,13 @@
 ---
-title: VILS Server 진행 (2025-12-26)
+title: Mock Policy 구현
 layout: default
 parent: VILS Server 개발
 nav_order: 1
+date: 2025-12-26
 ---
 
-# VILS Server 진행 (2025-12-26)
+# Mock Policy 구현
+<small>2025-12-26</small>
 
 Rule-based Mock Policy를 통한 Server Infrastructure 검증
 
