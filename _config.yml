@@ -27,6 +27,12 @@ footer_content: ""
 
 # 상단 링크 제거 (aux_links 없음)
 
+# 빌드 제외
+exclude:
+  - CLAUDE.md
+  - .claude/
+  - README.md
+
 # Giscus 댓글
 giscus:
   repo: "OIEIyoon/ad-simulation-public"
