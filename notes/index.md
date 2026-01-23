@@ -18,3 +18,4 @@ has_children: true
 | [VBD](vbd) | Diffusion 기반 multi-agent simulation (WOMD 2024 2위, 6Hz, High controllability) |
 | [SMART](smart) | GPT-style next-token prediction (WOMD 2024 1위, 100Hz, Zero-shot generalization) |
 | [PufferDrive](pufferdrive) | RL 기반 고처리량 자율주행 시뮬레이터 (300K+ SPS, C 코어, Observation/Action 구조) |
+| [GPUDrive to PufferDrive](gpudrive-to-pufferdrive) | GPUDrive→PufferDrive 아키텍처 전환 (Madrona→PufferLib, 6배 성능 향상 원리) |
