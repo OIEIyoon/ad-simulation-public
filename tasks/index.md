@@ -14,6 +14,4 @@ has_children: true
 | Task | Objective | Status |
 |------|-----------|--------|
 | [ViLS - Traffic Simulation Server](vils-server) | 실차-가상NPC 상호작용 시뮬레이션 서버 | 진행중 |
-
-### ViLS - Traffic Simulation Server
-- [IDM 기반 Rule-based Policy](vils-server-progress-2025-12-26) - Server infra 검증용 NPC driving
+| [IDM 기반 Rule-based Policy](vils-server-progress-2025-12-26) | Server infra 검증용 NPC driving (IDM + Lookahead) | 완료 |

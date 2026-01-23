@@ -3,7 +3,6 @@ title: ViLS - Traffic Simulation Server
 layout: default
 parent: Tasks
 nav_order: 1
-has_children: true
 ---
 
 # ViLS - Traffic Simulation Server
@@ -257,8 +256,3 @@ flowchart LR
 - [ ] NPC의 Ego 인식 및 반응
 - [ ] 시나리오 정의 및 재현
 
----
-
-## Subtasks
-
-- [IDM 기반 Rule-based Policy](vils-server-progress-2025-12-26) (2025-12-26)

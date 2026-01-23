@@ -1,8 +1,8 @@
 ---
 title: IDM 기반 Rule-based Policy
 layout: default
-parent: ViLS - Traffic Simulation Server
-nav_order: 1
+parent: Tasks
+nav_order: 2
 date: 2025-12-26
 ---
 
