@@ -26,6 +26,7 @@ E2E 자율주행 프로젝트 - Simulation 파트 연구 노트
 | [GPUDrive Observation](notes/gpudrive-observation) | GPUDrive Policy 입력 observation 구조 (2984차원) |
 | [VBD](notes/vbd) | Diffusion 기반 multi-agent simulation (WOMD 2024 2위, 6Hz, High controllability) |
 | [SMART](notes/smart) | GPT-style next-token prediction (WOMD 2024 1위, 100Hz, Zero-shot generalization) |
+| [PufferDrive](notes/pufferdrive) | RL 기반 고처리량 자율주행 시뮬레이터 (300K+ SPS, C 코어, Observation/Action 구조) |
 
 ---
 
