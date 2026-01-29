@@ -15,7 +15,7 @@ nav_order: 6
 
 ## Overview
 
-GPUDrive와 PufferDrive는 동일한 연구팀(NYU Emerge Lab)에서 개발한 자율주행 시뮬레이터. GPUDrive는 GPU에서 시뮬레이션을 실행하지만, PufferDrive는 CPU로 전환하여 **역설적으로 더 빠른 end-to-end 학습**을 달성했다.
+GPUDrive는 NYU Emerge Lab에서 개발한 자율주행 시뮬레이터. PufferDrive는 Emerge Lab과 Puffer.ai(Spencer Cheng)가 협업하여 GPUDrive를 PufferLib 기반으로 재구현한 것. GPU 시뮬레이션을 CPU로 전환하여 **역설적으로 더 빠른 end-to-end 학습**을 달성했다.
 
 | 항목 | GPUDrive | PufferDrive |
 |------|----------|-------------|
@@ -30,7 +30,7 @@ GPUDrive와 PufferDrive는 동일한 연구팀(NYU Emerge Lab)에서 개발한 �
 
 ### 핵심 개념: GPU Batch Simulation
 
-Madrona는 Stanford에서 개발한 GPU 기반 ECS(Entity Component System) 게임 엔진.
+Madrona는 Stanford, Georgia Tech에서 개발한 GPU 기반 ECS(Entity Component System) 게임 엔진.
 
 **ECS 패턴:**
 - **Entity**: 에이전트/객체 (ID만 보유)
@@ -66,21 +66,16 @@ graph TB
 
 ```mermaid
 sequenceDiagram
-    participant GPU_Sim as GPU (시뮬레이션)
-    participant Sync as cudaDeviceSynchronize
-    participant GPU_NN as GPU (신경망)
+    participant GPU as GPU (시뮬레이션 + 학습)
     participant CPU as CPU
 
     loop 매 스텝
-        GPU_Sim->>GPU_Sim: 시뮬레이션 실행
-        GPU_Sim->>Sync: 완료 대기
-        Note over Sync: 병목 1: 동기화
-        Sync->>CPU: 관측값 전송
-        Note over CPU: 병목 2: 메모리 복사
-        CPU->>GPU_NN: 텐서 전달
-        GPU_NN->>GPU_NN: Forward Pass
-        Note over GPU_NN: 병목 3: GPU 경합
-        GPU_NN->>GPU_Sim: 행동 전달
+        GPU->>GPU: CUDA 커널 (시뮬레이션)
+        Note over GPU: ECS 데이터 → PyTorch 텐서 변환 (병목)
+        GPU->>GPU: Forward Pass (학습)
+        Note over GPU: 시뮬레이션과 GPU 자원 경합 (병목)
+        GPU->>CPU: 관측값/행동 동기화
+        Note over CPU: 배칭 오버헤드 (병목)
     end
 ```
 
@@ -88,10 +83,11 @@ sequenceDiagram
 
 | 병목 | 원인 | 영향 |
 |------|------|------|
-| GPU 동기화 | `cudaDeviceSynchronize` 매 스텝 호출 | 대기 시간 누적 |
-| 메모리 전송 | GPU→CPU 관측값 복사 | 대역폭 낭비 |
+| 메모리 레이아웃 | ECS ↔ PyTorch 텐서 간 변환 오버헤드 | 처리량 제한 |
+| 배칭 오버헤드 | GPU 시뮬레이션과 학습 간 동기화 비용 | End-to-end SPS ~30K-50K 수준 |
 | GPU 경합 | 시뮬레이션+학습 동일 GPU | 자원 경쟁 |
-| 배칭 대기 | 모든 월드 완료까지 대기 | Straggler 문제 |
+
+> GPUDrive delivered high raw simulation speed, but end-to-end training throughput (~30K steps/sec) still limited experiments. **Memory layout and batching overheads** prevented further speedups. — *PufferDrive 2.0 docs*
 
 ---
 
@@ -147,41 +143,46 @@ env = env_creator(..., buf=buf)  # 환경이 버퍼에 직접 기록
 **2. 세마포어 기반 동기화**
 
 ```python
-# 파이프/큐 대신 busy-wait + 플래그
+# 플래그 상수 (vector.py)
+RESET, STEP, SEND, RECV, CLOSE, MAIN, INFO = 0, 1, 2, 3, 4, 5, 6
+
+# 워커 프로세스: 세마포어 플래그로 동기화
 semaphores = np.ndarray(num_workers, dtype=np.uint8, buffer=shm["semaphores"])
 
 while True:
     sem = semaphores[worker_idx]
-    if sem == STEP:
-        envs.step(actions)
-        semaphores[worker_idx] = MAIN  # 완료 신호
+    if sem >= MAIN:          # 대기 상태
+        continue
+    if sem == RESET:
+        envs.reset(seed=seed)
+    elif sem == STEP:
+        envs.step(atn_arr)
+    semaphores[worker_idx] = MAIN  # 완료 신호
 ```
 
-**3. Double Buffering**
+**3. 비동기 파이프라인 (Async Send/Recv)**
+
+```python
+# pufferl.py 학습 루프
+o, r, d, t, info, env_id, mask = vecenv.recv()  # 이전 send() 결과 수신
+action = policy(o)                                # GPU: Forward Pass
+vecenv.send(action)                               # 비동기 전송 → 즉시 반환
+```
 
 ```mermaid
-gantt
-    title Double Buffering Timeline
-    dateFormat X
-    axisFormat %s
+sequenceDiagram
+    participant W as CPU Workers
+    participant M as Main (Python)
+    participant G as GPU (신경망)
 
-    section CPU 0-7
-    시뮬레이션    :a1, 0, 10
-    대기          :a2, 10, 20
-    시뮬레이션    :a3, 20, 30
-
-    section CPU 8-15
-    대기          :b1, 0, 10
-    시뮬레이션    :b2, 10, 20
-    대기          :b3, 20, 30
-
-    section GPU
-    Forward 0-7   :c1, 0, 10
-    Forward 8-15  :c2, 10, 20
-    Forward 0-7   :c3, 20, 30
+    M->>W: send(actions) — 세마포어 STEP 설정
+    W->>W: 시뮬레이션 실행 (비동기)
+    M->>G: Forward Pass (이전 관측값)
+    W->>M: recv() — 세마포어 MAIN 확인
+    M->>G: 학습 업데이트
 ```
 
-절반의 워커가 시뮬레이션하는 동안 GPU는 나머지 절반 처리 → **CPU/GPU 모두 100% 활용**
+CPU 워커가 시뮬레이션하는 동안 GPU는 이전 배치의 Forward Pass 처리 → **CPU/GPU 파이프라인 병렬화**
 
 ---
 
@@ -221,6 +222,8 @@ gantt
 └──────────┘    └──────────┘    └──────────┘    └─────────┘
 ```
 
+**기본 설정** (`drive.ini`): 16 workers × 16 envs × 1,024 agents = **262,144 병렬 에이전트**
+
 ---
 
 ## 성능 차이 원인 상세
@@ -230,7 +233,7 @@ gantt
 | **GPU 경합** | 시뮬+학습 공유 | 학습 전용 | GPU 활용률 ↑ |
 | **동기화** | cudaSync 매 스텝 | 세마포어 (ns 단위) | 지연 제거 |
 | **메모리 전송** | GPU→CPU 복사 | Zero-copy | 대역폭 절약 |
-| **배칭** | 전체 완료 대기 | Double buffering | Straggler 해결 |
+| **배칭** | 전체 완료 대기 | 비동기 send/recv 파이프라인 | Straggler 해결 |
 
 ### 핵심 인사이트
 
@@ -240,17 +243,17 @@ End-to-end 학습 속도:  PufferLib >> Madrona (6배)
 ```
 
 **Madrona의 함정:**
-- 시뮬레이션 자체는 GPU에서 극도로 빠름
-- 하지만 학습 루프에서 오버헤드가 누적:
-  - 동기화 대기
-  - 메모리 레이아웃 변환 (ECS ↔ PyTorch)
-  - GPU 자원 경쟁
+- Raw 시뮬레이션은 GPU에서 수백만 FPS
+- 하지만 end-to-end 학습에서 오버헤드 누적:
+  - 메모리 레이아웃 변환 (ECS ↔ PyTorch 텐서)
+  - 배칭 오버헤드
+  - 시뮬레이션과 학습 간 GPU 자원 경합
 
 **PufferLib의 해결:**
 - CPU 시뮬레이션은 단독으로는 느림
 - 하지만 **오버헤드가 거의 0**:
   - 공유 메모리로 복사 제거
-  - Double buffering으로 대기 제거
+  - 비동기 파이프라인으로 대기 제거
   - GPU는 학습에만 집중
 
 ---
@@ -263,26 +266,6 @@ GPUDrive와 PufferDrive는 동일한 데이터 포맷 사용.
 |----------|------|------|
 | GPUDrive_mini | 1,000 훈련 + 300 테스트 | [HuggingFace](https://huggingface.co/datasets/EMERGE-lab/GPUDrive_mini) |
 | GPUDrive | 100,000 씬 | [HuggingFace](https://huggingface.co/datasets/EMERGE-lab/GPUDrive) |
-
----
-
-## 시뮬레이터 발전 히스토리
-
-```mermaid
-timeline
-    title 자율주행 RL 시뮬레이터 발전
-    2022 : Nocturne
-         : 2K SPS
-         : ~48시간 학습
-    2024 : GPUDrive
-         : 50K SPS
-         : ~1.7시간 학습
-         : Madrona 기반
-    2025 : PufferDrive
-         : 320K SPS
-         : ~4분 학습
-         : PufferLib 기반
-```
 
 ---
 
