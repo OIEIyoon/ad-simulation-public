@@ -1,3 +1,7 @@
+---
+published: false
+---
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -71,6 +75,16 @@ nav_order: [순서]
 ### Task 2
 - 상세 내용
 ```
+
+## Build Rules
+
+**모든 `CLAUDE.md` 파일은 Jekyll 빌드에서 자동으로 제외된다** (`_config.yml`에 `"**/CLAUDE.md"` 설정).
+
+- `tasks/CLAUDE.md` - 작성 가이드 (제외)
+- `notes/CLAUDE.md` - 작성 가이드 (제외)
+- 루트 `/CLAUDE.md` - 프로젝트 가이드 (제외)
+
+이 규칙은 강제되므로 내부용 가이드/메모를 안전하게 저장할 수 있다.
 
 ## Technical Notes
 

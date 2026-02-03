@@ -32,6 +32,7 @@ exclude:
   - CLAUDE.md
   - .claude/
   - README.md
+  - "**/CLAUDE.md"
 
 # Giscus 댓글
 giscus:

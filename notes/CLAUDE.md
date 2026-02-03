@@ -1,3 +1,7 @@
+---
+published: false
+---
+
 # Notes 작성 가이드
 
 ## 목적
