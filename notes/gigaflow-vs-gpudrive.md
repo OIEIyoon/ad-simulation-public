@@ -18,14 +18,14 @@ nav_order: 7
 | 항목 | Gigaflow | GPUDrive | PufferDrive |
 |------|----------|----------|-------------|
 | **조직** | Wayve (추정) | NYU Emerge Lab | Emerge Lab + Puffer.ai |
-| **엔진** | PyTorch GPU 배치 연산 | Madrona[^ecs] (GPU ECS[^ecs]) + CUDA | PufferLib (CPU C코드) |
-| **맵** | 합성 8개 (CARLA 기반) | 실제 WOMD[^womd] | WOMD + CARLA |
+| **엔진** | PyTorch GPU 배치 연산 | Madrona (GPU ECS) + CUDA | PufferLib (CPU C코드) |
+| **맵** | 합성 8개 (CARLA 기반) | 실제 WOMD | WOMD + CARLA |
 | **NPC 제어** | **전부 Self-play** | Log replay 또는 학습 에이전트 | Log replay 또는 학습 에이전트 |
 | **오픈소스** | 비공개 | MIT 라이선스 | 공개 |
 | **목표** | SOTA 정책 생산 | 범용 학습 플랫폼 | 고처리량 학습 플랫폼 |
 
-[^ecs]: **ECS** (Entity-Component-System): 게임 엔진 아키텍처 패턴. Entity(ID), Component(데이터: 위치, 속도 등), System(로직: 물리, 충돌 등)을 분리하여 캐시 효율과 병렬성을 극대화. Madrona는 이 패턴을 GPU CUDA 커널로 구현한 엔진.
-[^womd]: **WOMD** (Waymo Open Motion Dataset): Waymo가 공개한 실제 주행 데이터셋. 103K개 멀티에이전트 교통 시나리오 포함.
+> **ECS** (Entity-Component-System): 게임 엔진 아키텍처 패턴. Entity(ID), Component(데이터), System(로직)을 분리하여 캐시 효율과 병렬성을 극대화. Madrona는 이 패턴을 GPU CUDA 커널로 구현한 엔진.
+> **WOMD** (Waymo Open Motion Dataset): Waymo가 공개한 실제 주행 데이터셋. 103K개 멀티에이전트 교통 시나리오 포함.
 
 ---
 
@@ -96,10 +96,10 @@ graph TB
 |---|---|---|---|
 | 시뮬레이션 위치 | GPU (PyTorch) | GPU (CUDA) | **CPU (C)** |
 | 학습 위치 | GPU | GPU | GPU |
-| 데이터 전달 | GPU→GPU (동일 메모리) | ECS→Tensor 변환 (병목) | CPU→GPU zero-copy[^zerocopy] |
+| 데이터 전달 | GPU→GPU (동일 메모리) | ECS→Tensor 변환 (병목) | CPU→GPU zero-copy |
 | 자원 경합 | 없음 (배치 연산) | **있음** (시뮬+학습 GPU 공유) | 없음 (CPU/GPU 분리) |
 
-[^zerocopy]: **Zero-copy**: CPU와 GPU가 동일 메모리 영역을 공유하여 데이터 복사 없이 접근. pinned memory 또는 shared memory를 통해 구현.
+> **Zero-copy**: CPU와 GPU가 동일 메모리 영역을 공유하여 데이터 복사 없이 접근. pinned memory 또는 shared memory를 통해 구현.
 
 GPUDrive의 역설: raw 시뮬레이션은 가장 빠르지만, **ECS↔PyTorch 변환 병목 + GPU 자원 경합**으로 end-to-end 학습 처리량이 가장 낮음. PufferDrive가 CPU 전환으로 오히려 6배 향상.
 
@@ -120,16 +120,16 @@ GPUDrive의 역설: raw 시뮬레이션은 가장 빠르지만, **ECS↔PyTorch 
 
 | | Gigaflow | GPUDrive | PufferDrive |
 |---|---|---|---|
-| Raw ASPS[^asps] | **~1.2M** | **2.3M** (peak) | - |
-| CASPS[^casps] | - | ~200K | - |
-| End-to-end SPS[^sps] | **~1.2M** | ~50K | **~320K** |
+| Raw ASPS | **~1.2M** | **2.3M** (peak) | - |
+| CASPS | - | ~200K | - |
+| End-to-end SPS | **~1.2M** | ~50K | **~320K** |
 | 총 학습량 | **1T transition (1.6B km)** | ~수십M steps | ~수백M steps |
 | 학습 시간 | 10일 (8×A100) | 15시간/1K 시나리오 | ~15분/10K 시나리오 |
 | 비용 | ~$5/1M km 주행 | <2 GPU-days | 단일 GPU |
 
-[^sps]: **SPS** (Steps Per Second): 초당 시뮬레이션 스텝 수. end-to-end = 시뮬레이션 + 추론 + 학습 전부 포함한 실질 처리량.
-[^asps]: **ASPS** (Agent Steps Per Second): 초당 에이전트별 스텝 수. raw 시뮬레이션 속도만 측정 (학습 미포함). 예: 100 환경 × 10 에이전트 × 1K 스텝/초 = 1M ASPS.
-[^casps]: **CASPS** (Controlled Agent SPS): 초당 **제어 대상** 에이전트 스텝 수. log replay 에이전트 제외, 실제 정책이 제어하는 에이전트만 카운트.
+> **SPS** (Steps Per Second): 초당 시뮬레이션 스텝 수. end-to-end = 시뮬레이션 + 추론 + 학습 전부 포함한 실질 처리량.
+> **ASPS** (Agent Steps Per Second): 초당 에이전트별 스텝 수. raw 시뮬레이션 속도만 측정 (학습 미포함).
+> **CASPS** (Controlled Agent SPS): 초당 **제어 대상** 에이전트 스텝 수. log replay 에이전트 제외, 실제 정책이 제어하는 에이전트만 카운트.
 
 GPUDrive가 raw ASPS 최고이지만, **end-to-end SPS에서 Gigaflow가 압도** (데이터 전달 병목 없음 + advantage filtering으로 학습 효율화).
 
@@ -158,25 +158,25 @@ Gigaflow의 7.4M 결정/초는 **학습 중 rollout 수집 시 배치 추론 속
 
 | 기법 | 설명 | 효과 |
 |------|------|------|
-| **Spatial Hashing**[^spatialhash] | 2D 격자 해시맵, 폴리곤/에이전트/OOB점 등록 | 위치파악·충돌·관측 전부 O(1) |
+| **Spatial Hashing** | 2D 격자 해시맵, 폴리곤/에이전트/OOB점 등록 | 위치파악·충돌·관측 전부 O(1) |
 | **관측 캐싱** | 맵 관측(W_lane, W_boundary)을 폴리곤 center에 사전계산 | 런타임에 lookup + 좌표변환만 |
 | **On-demand 관측 재계산** | rollout buffer에 world state만 저장, 관측은 학습 시 재생성 | 메모리 수십~수백 배 절약 |
 | **단일 정책** | 전 에이전트(차량·보행자·자전거)에 하나의 네트워크 | 스텝당 forward pass 1회 |
 | **Advantage Filtering** | advantage 절대값 하위 80% 샘플 제거 | 학습 처리량 + 수렴 품질 향상 |
 | **1m 폴리곤 = hash 단위** | 도로 표현과 spatial hash가 동일 자료구조 | 별도 인덱스 불필요 |
 
-[^spatialhash]: **Spatial Hashing**: 공간을 고정 크기 격자(bucket)로 나누고, 각 bucket에 해당 영역의 객체를 등록. 좌표 → bucket 변환이 나눗셈 1회(O(1))라 매우 빠름. Gigaflow는 위치파악, 충돌감지, off-road검사, 관측구성에 동일 해시 재활용.
+> **Spatial Hashing**: 공간을 고정 크기 격자(bucket)로 나누고, 각 bucket에 해당 영역의 객체를 등록. 좌표 → bucket 변환이 나눗셈 1회(O(1))라 매우 빠름. Gigaflow는 위치파악, 충돌감지, off-road검사, 관측구성에 동일 해시 재활용.
 
 ### 5.2 GPUDrive 최적화
 
 | 기법 | 설명 | 효과 |
 |------|------|------|
-| **BVH**[^bvh] | 계층적 공간 분할로 충돌 후보 쌍 축소 | O(N²) → O(N log N) |
+| **BVH** | 계층적 공간 분할로 충돌 후보 쌍 축소 | O(N²) → O(N log N) |
 | **Polyline Decimation** | Visvalingham-Whyatt 알고리즘으로 도로 점 10-15배 감소 | 메모리/연산 절감 |
 | **Madrona ECS** | 단일 CUDA 커널로 전 환경 동시 스텝 | raw 시뮬레이션 극대화 |
 | **필요 시 메모리 할당** | 에이전트 수만큼만 할당 (최대값 아님) | 메모리 효율 |
 
-[^bvh]: **BVH** (Bounding Volume Hierarchy): 객체들을 계층적 바운딩 볼륨(AABB 등)으로 감싸는 트리 구조. 충돌 검사 시 트리 상위에서 겹침 없으면 하위 전체 생략 → O(N log N).
+> **BVH** (Bounding Volume Hierarchy): 객체들을 계층적 바운딩 볼륨(AABB 등)으로 감싸는 트리 구조. 충돌 검사 시 트리 상위에서 겹침 없으면 하위 전체 생략 → O(N log N).
 
 ### 5.3 PufferDrive 최적화
 
@@ -193,14 +193,14 @@ Gigaflow의 7.4M 결정/초는 **학습 중 rollout 수집 시 배치 추론 속
 
 | | Gigaflow | GPUDrive | PufferDrive |
 |---|---|---|---|
-| 도로 표현 | 1m 볼록 사각형 (convex quad)[^convexquad] | **폴리라인** (WOMD 원본) | Binary map (JSON 변환) |
-| 좌표계 | **Frenet**[^frenet] (q, d, polyId) | Ego-centric (x, y) | Ego-centric (x, y) |
+| 도로 표현 | 1m 볼록 사각형 (convex quad) | **폴리라인** (WOMD 원본) | Binary map (JSON 변환) |
+| 좌표계 | **Frenet** (q, d, polyId) | Ego-centric (x, y) | Ego-centric (x, y) |
 | 차선 정보 | 차선 폭, heading, 곡률 | 폴리라인 점 좌표만 | 세그먼트 좌표 + 타입 |
 | 라우팅 | **Dijkstra 사전계산** | 없음 (lane map 부재) | 있음 |
 | 신호등 | 있음 (랜덤화) | **없음** | 없음 |
 
-[^convexquad]: **Convex Quadrilateral**: 모든 내각이 180° 미만인 볼록 사각형. 점-폴리곤 검사가 외적 4회로 단순하여 GPU 병렬화에 유리. Gigaflow는 차선을 1m 길이 × 차선폭의 볼록 사각형으로 분할.
-[^frenet]: **Frenet 좌표계**: 도로 중심선을 기준으로 한 곡선 좌표. q=차선 따라 종방향 거리, d=차선 중심에서 횡방향 거리. "차선 중심에서 0.7m 벗어남"처럼 맵 무관하게 의미가 동일하여 일반화에 유리.
+> **Convex Quadrilateral**: 모든 내각이 180° 미만인 볼록 사각형. 점-폴리곤 검사가 외적 4회로 단순하여 GPU 병렬화에 유리. Gigaflow는 차선을 1m 길이 × 차선폭의 볼록 사각형으로 분할.
+> **Frenet 좌표계**: 도로 중심선을 기준으로 한 곡선 좌표. q=차선 따라 종방향 거리, d=차선 중심에서 횡방향 거리. 맵 무관하게 의미가 동일하여 일반화에 유리.
 
 **GPUDrive의 한계**: lane map 자체가 없어 경로 추종 알고리즘 적용 어려움
 
@@ -230,15 +230,15 @@ graph LR
 
 | | Gigaflow | GPUDrive | PufferDrive |
 |---|---|---|---|
-| 알고리즘 | **Spatial Hash + Swept-Volume**[^swept] | **BVH** | **Box2D** |
+| 알고리즘 | **Spatial Hash + Swept-Volume** | **BVH** | **Box2D** |
 | 후보 축소 | hash bucket 공유 쌍만 | 계층적 bounding volume 탐색 | Box2D 내장 broadphase |
 | 세밀 검사 | 모서리 이동 궤적 ↔ 바운딩박스 교차 | 볼록 도형 겹침 | AABB + 상세 검사 |
-| Tunneling[^tunneling] 방지 | **있음** (swept-volume) | 없음 (프레임별 겹침만) | Box2D 의존 |
+| Tunneling 방지 | **있음** (swept-volume) | 없음 (프레임별 겹침만) | Box2D 의존 |
 | 2.5D (고가도로) | **있음** (z 좌표 필터링) | 없음 | 없음 |
 | 복잡도 | O(A × k), k=bucket당 에이전트 | O(A log A) | Box2D 의존 |
 
-[^swept]: **Swept-Volume**: 물체가 t→t+1로 이동할 때 모서리가 그린 궤적(선분)이 상대 바운딩박스를 관통하는지 검사. 프레임 간 겹침만 보는 방식 대비 고속 이동 시 관통(tunneling) 방지 가능.
-[^tunneling]: **Tunneling**: 물체가 한 프레임에 상대를 관통하여 반대편으로 넘어가는 현상. Δt가 크거나 속도가 빠르면 발생. Gigaflow는 Δt=0.3초라 swept-volume이 필수.
+> **Swept-Volume**: 물체가 t→t+1로 이동할 때 모서리가 그린 궤적(선분)이 상대 바운딩박스를 관통하는지 검사. 고속 이동 시 관통(tunneling) 방지 가능.
+> **Tunneling**: 물체가 한 프레임에 상대를 관통하여 반대편으로 넘어가는 현상. Δt가 크거나 속도가 빠르면 발생. Gigaflow는 Δt=0.3초라 swept-volume이 필수.
 
 ---
 
@@ -293,11 +293,11 @@ graph LR
 | | Gigaflow | GPUDrive CLASSIC | GPUDrive JERK | PufferDrive |
 |---|---|---|---|---|
 | **행동 수** | **12** | **91** | **12** | 91 또는 12 |
-| **종방향** | jerk[^jerk] 4종 | 가속 7종 | jerk 4종 | 모드 의존 |
+| **종방향** | jerk 4종 | 가속 7종 | jerk 4종 | 모드 의존 |
 | **횡방향** | jerk 3종 | 조향 13종 | jerk 3종 | 모드 의존 |
 | **제어 대상** | jerk (m/s³) | 가속+조향 | jerk (m/s³) | 모드 의존 |
 
-[^jerk]: **Jerk**: 가속도의 시간 변화율 (m/s³). 가속도를 직접 제어하는 것보다 부드러운 궤적 생성 가능. Gigaflow와 GPUDrive JERK 모드 모두 jerk 기반 제어 채택.
+> **Jerk**: 가속도의 시간 변화율 (m/s³). 가속도를 직접 제어하는 것보다 부드러운 궤적 생성 가능. Gigaflow와 GPUDrive JERK 모드 모두 jerk 기반 제어 채택.
 
 ### 종방향 jerk 값 (Gigaflow = GPUDrive JERK)
 
@@ -398,7 +398,7 @@ $$v^{(t)} = v^{(t-1)} + 0.5(a_{long}^{(t)} + a_{long}^{(t-1)}) \Delta t$$
 
 | 파라미터 | 값/범위 |
 |---------|--------|
-| $C_{throttle}$ | $\sim X(1.25)$[^mixeduniform] |
+| $C_{throttle}$ | $\sim X(1.25)$ |
 | $C_{steer}$ | $\sim X(1.25)$ |
 | $C_{acc}$ | $\sim X(1.5)$ |
 | $a_{long}$ 범위 | $[-5, 2.5 \cdot C_{acc}]$ m/s² |
@@ -407,7 +407,7 @@ $$v^{(t)} = v^{(t-1)} + 0.5(a_{long}^{(t)} + a_{long}^{(t-1)}) \Delta t$$
 | $\phi_{max}$ (조향각) | 0.55 rad |
 | $\delta_{max}$ (조향 변화율) | 0.6 rad/s |
 
-[^mixeduniform]: **혼합 균일분포** $X(a) = 0.5 \cdot U(a^{-1}, 1) + 0.5 \cdot U(1, a)$: 1 기준 대칭 분포. 절반은 1보다 작고 절반은 1보다 큰 값을 생성하여 동역학 다양성 확보.
+> **혼합 균일분포** $X(a) = 0.5 \cdot U(a^{-1}, 1) + 0.5 \cdot U(1, a)$: 1 기준 대칭 분포. 절반은 1보다 작고 절반은 1보다 큰 값을 생성하여 동역학 다양성 확보.
 
 부호 변경 시 0 처리: $a_{long}$이 양→음 전환 시 0으로 설정 → 정지/등속 용이, 부드러운 궤적
 
@@ -442,7 +442,7 @@ speed += acceleration × dt
 | **배치 크기** | **256K** | ~4.6K | **524K** |
 | **미니배치** | - | - | 32K |
 | **γ (discount)** | **0.999** | 0.99 | 0.98 |
-| **λ (GAE)**[^gae] | 0.95 | 0.95 | - |
+| **λ (GAE)** | 0.95 | 0.95 | - |
 | **학습률** | $5 \times 10^{-4}$ (cosine) | $3 \times 10^{-4}$ | 0.003 |
 | **clip ratio** | 0.2 | 0.2 | 0.2 |
 | **entropy coef** | 0.01 | 0.001 | - |
@@ -450,11 +450,11 @@ speed += acceleration × dt
 | **max grad norm** | 0.5 | - | - |
 | **PPO epochs** | 3 | - | - |
 | **rollout 길이** | 128 steps | 50 steps | 32 (bptt) |
-| **정밀도** | 16-bit AMP[^amp] | - | - |
+| **정밀도** | 16-bit AMP | - | - |
 | **초기화** | Orthogonal, zero bias | - | - |
 
-[^gae]: **GAE** (Generalized Advantage Estimation): advantage를 여러 스텝의 TD 오차를 λ-가중 평균으로 추정. λ=1이면 Monte Carlo, λ=0이면 1-step TD.
-[^amp]: **AMP** (Automatic Mixed Precision): float32와 float16을 자동 혼합 사용. 메모리 절약 + 연산 가속.
+> **GAE** (Generalized Advantage Estimation): advantage를 여러 스텝의 TD 오차를 λ-가중 평균으로 추정. λ=1이면 Monte Carlo, λ=0이면 1-step TD.
+> **AMP** (Automatic Mixed Precision): float32와 float16을 자동 혼합 사용. 메모리 절약 + 연산 가속.
 
 ### 12.2 Advantage Filtering (Gigaflow 고유)
 
@@ -500,11 +500,11 @@ GPUDrive/PufferDrive는 WOMD 시나리오 길이(9.1초)에 맞춤 → 짧은 �
 | | Gigaflow | GPUDrive | PufferDrive |
 |---|---|---|---|
 | **파라미터 수** | **6M** | 소형 (미공개) | 소형 |
-| **아키텍처** | **Deep Sets**[^deepsets] (permutation invariant) | MLP | MLP |
+| **아키텍처** | **Deep Sets** (permutation invariant) | MLP | MLP |
 | **입력 처리** | 관측 타입별 독립 인코딩 → 합산 | 전체 concat → MLP | 전체 concat → MLP |
 | **Conditioning** | C_dynamics + C_reward 입력 | 없음 | 없음 |
 
-[^deepsets]: **Deep Sets**: 집합 입력에 대해 순서 불변(permutation invariant) 출력을 보장하는 아키텍처. 각 원소를 독립 인코딩 후 합산(또는 평균). 주변 에이전트 순서가 바뀌어도 동일 출력.
+> **Deep Sets**: 집합 입력에 대해 순서 불변(permutation invariant) 출력을 보장하는 아키텍처. 각 원소를 독립 인코딩 후 합산(또는 평균). 주변 에이전트 순서가 바뀌어도 동일 출력.
 
 ---
 
@@ -515,11 +515,11 @@ GPUDrive/PufferDrive는 WOMD 시나리오 길이(9.1초)에 맞춤 → 짧은 �
 | **CARLA** (DS) | **92~99** (SOTA) | 미평가 |
 | **nuPlan** (Score) | **93.8** (SOTA) | 미평가 |
 | **Waymax** (Score) | **99.16** (SOTA) | 미평가 |
-| **WOSAC**[^wosac] (리얼리즘) | **0.62** (인간 데이터 없이) | 미평가 |
+| **WOSAC** (리얼리즘) | **0.62** (인간 데이터 없이) | 미평가 |
 | **Goal 도달률** | - | **95%** (1K 시나리오) |
 | **강건성** | **17.5년 / 3M km per incident** | 미보고 |
 
-[^wosac]: **WOSAC** (Waymo Open Sim Agents Challenge): 생성된 에이전트 궤적이 실제 인간 주행과 얼마나 유사한지 평가하는 벤치마크. 속도·가속·충돌·도로 이탈 등 복합 메트릭.
+> **WOSAC** (Waymo Open Sim Agents Challenge): 생성된 에이전트 궤적이 실제 인간 주행과 얼마나 유사한지 평가하는 벤치마크. 속도·가속·충돌·도로 이탈 등 복합 메트릭.
 
 GPUDrive/PufferDrive는 벤치마크 SOTA가 목적이 아니라 **학습 플랫폼 제공**이 목적. 직접 비교는 부적절하나, 학습된 정책의 활용 범위에서 차이가 큼.
 
