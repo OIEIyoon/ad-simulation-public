@@ -133,20 +133,22 @@ GPUDrive의 역설: raw 시뮬레이션은 가장 빠르지만, **ECS↔PyTorch 
 
 GPUDrive가 raw ASPS 최고이지만, **end-to-end SPS에서 Gigaflow가 압도** (데이터 전달 병목 없음 + advantage filtering으로 학습 효율화).
 
-### 4.2 정책 연산 성능
+### 4.2 학습 연산 성능
+
+> **참고**: 세 시뮬레이터 모두 정책의 **배포 시 inference latency (ms/step)**를 논문에서 보고하지 않음. 아래 수치는 모두 **학습 중** 측정값.
 
 | | Gigaflow | GPUDrive | PufferDrive |
 |---|---|---|---|
 | **정책 파라미터** | **6M** | 소형 (미공개) | 소형 |
-| **추론 처리량** | **7.4M 결정/초** (배치 2.6M) | - | - |
+| **Rollout 추론 처리량** | **7.4M 결정/초** (배치 2.6M, 8×A100) | - | - |
 | **학습 처리량** | **8 gradient update/초** (배치 256K) | - | - |
 | **총 GPU 시간** | **1,900 시간** (8×A100) | <48 GPU-hours (전체 실험) | - |
 | **총 학습 거리** | **1.6B km** | - | - |
 | **총 state transitions** | **1T** | - | - |
-| **실시간 대비 속도** | **360K×** | - | - |
+| **학습 중 실시간 대비** | **360K×** | - | - |
 | **Nocturne 대비** | - | **200~300×** 빠름 | - |
 
-Gigaflow는 **30M steps/hour** 처리하는 GPUDrive 대비 약 40배 이상의 end-to-end 처리량. 단, 8×A100 vs 1×RTX 4080이므로 GPU당 효율은 별도 비교 필요.
+Gigaflow의 7.4M 결정/초는 **학습 중 rollout 수집 시 배치 추론 속도**이며, 단일 차량 실시간 배포 latency가 아님. Gigaflow는 **30M steps/hour** 처리하는 GPUDrive 대비 약 40배 이상의 end-to-end 처리량. 단, 8×A100 vs 1×RTX 4080이므로 GPU당 효율은 별도 비교 필요.
 
 ---
 
