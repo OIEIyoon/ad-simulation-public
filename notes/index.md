@@ -19,3 +19,4 @@ has_children: true
 | [SMART](smart) | GPT-style next-token prediction (WOMD 2024 1위, 100Hz, Zero-shot generalization) |
 | [PufferDrive](pufferdrive) | RL 기반 고처리량 자율주행 시뮬레이터 (300K+ SPS, C 코어, Observation/Action 구조) |
 | [GPUDrive to PufferDrive](gpudrive-to-pufferdrive) | GPUDrive→PufferDrive 아키텍처 전환 (Madrona→PufferLib, 6배 성능 향상 원리) |
+| [Gigaflow vs GPUDrive/PufferDrive](gigaflow-vs-gpudrive) | Gigaflow vs GPUDrive/PufferDrive 시뮬레이터 비교 (아키텍처, 보상, 최적화, 성능) |
