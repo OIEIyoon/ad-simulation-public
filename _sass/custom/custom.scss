@@ -31,7 +31,7 @@ h1, h2, h3, h4, h5, h6 {
 // 메인 컨텐츠 영역
 // ========================================
 .main-content {
-  max-width: 900px;
+  max-width: 1200px;
 
   h1 {
     font-size: 2.25rem;
@@ -202,38 +202,6 @@ blockquote {
   padding-top: 2rem;
 }
 
-// ========================================
-// 와이드 레이아웃 (.wide-content 클래스 적용 시)
-// ========================================
-.wide-content {
-  // 콘텐츠 폭 제한 해제
-  .main-content {
-    max-width: 100% !important;
-  }
-
-  // 메인 영역 좌우 패딩 최소화
-  .main {
-    @media (min-width: 66.5rem) {
-      margin-left: 160px !important;
-    }
-  }
-
-  .main-content-wrap {
-    max-width: 100% !important;
-    padding-left: 1rem !important;
-    padding-right: 1rem !important;
-  }
-
-  // 사이드바: 좁게 + 왼쪽 밀착
-  @media (min-width: 66.5rem) {
-    .side-bar {
-      width: 160px !important;
-      min-width: 160px !important;
-      padding-left: 0.5rem !important;
-      padding-right: 0.5rem !important;
-    }
-  }
-}
 
 // GIF 그리드 — 테이블 스타일 리셋
 .gif-grid {
