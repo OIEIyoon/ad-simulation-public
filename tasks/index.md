@@ -16,6 +16,7 @@ has_children: true
 | Task | Objective | Status |
 |------|-----------|--------|
 | [RL 기반 Traffic Simulation](rl-traffic-simulation) | Local 교통 데이터 기반 Realistic NPC Behavior 학습 | 조사중 |
+| [GPUDrive Policy Evaluation](gpudrive-policy-eval) | Waymo 시나리오 Neural Policy vs Log Replay 비교 | 완료 |
 
 ## Work
 

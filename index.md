@@ -15,6 +15,7 @@ E2E 자율주행 프로젝트 - Simulation 파트 연구 노트
 | Task | Objective | Status |
 |------|-----------|--------|
 | [ViLS - Traffic Simulation Server](tasks/vils-server) | 실차-가상NPC 상호작용 시뮬레이션 서버 | 진행중 |
+| [GPUDrive Policy Evaluation](tasks/gpudrive-policy-eval) | Waymo 시나리오 Neural Policy vs Log Replay 비교 | 완료 |
 
 ---
 
