@@ -5,6 +5,8 @@ parent: Tasks
 nav_order: 3
 ---
 
+<script>document.documentElement.classList.add('wide-content');</script>
+
 # GPUDrive Policy Evaluation
 
 Waymo 시나리오에서 학습된 Neural Policy와 원본 Log Replay 비교 평가
