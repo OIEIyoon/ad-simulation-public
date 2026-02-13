@@ -31,7 +31,7 @@ h1, h2, h3, h4, h5, h6 {
 // 메인 컨텐츠 영역
 // ========================================
 .main-content {
-  max-width: 1200px;
+  max-width: none;
 
   h1 {
     font-size: 2.25rem;
@@ -196,10 +196,17 @@ blockquote {
 }
 
 // ========================================
-// 페이지 상단 여백
+// 페이지 레이아웃 — 콘텐츠 폭 최대화
 // ========================================
 .main {
   padding-top: 2rem;
+  max-width: none !important;
+}
+
+.main-content-wrap {
+  max-width: none !important;
+  padding-left: 2rem !important;
+  padding-right: 2rem !important;
 }
 
 
