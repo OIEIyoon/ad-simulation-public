@@ -134,6 +134,8 @@ a {
   @media (min-width: 66.5rem) {
     width: 200px !important;
     min-width: 200px !important;
+    left: 0 !important;
+    transform: none !important;
   }
 }
 
