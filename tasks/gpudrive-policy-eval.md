@@ -63,33 +63,16 @@ Obs (2,984-dim)
 
 ## Results
 
-각 시나리오별 **Neural Policy** (좌) vs **Log Replay** (우) 비교.
-
-<style>
-.gif-grid { width: 100%; border-collapse: collapse; }
-.gif-grid td { width: 50%; padding: 4px; vertical-align: top; }
-.gif-grid img { width: 100%; border-radius: 4px; }
-.gif-grid .scenario-header {
-  background: #f5f6fa;
-  font-weight: bold;
-  text-align: center;
-  padding: 6px;
-  font-size: 0.9em;
-}
-</style>
+각 시나리오별 **Neural Policy** vs **Log Replay** 비교.
 
 {% assign scenarios = "tfrecord-00002-of-01000_345,tfrecord-00005-of-01000_266,tfrecord-00065-of-01000_207,tfrecord-00072-of-01000_33,tfrecord-00107-of-01000_443,tfrecord-00135-of-01000_173,tfrecord-00136-of-01000_351,tfrecord-00144-of-01000_130,tfrecord-00165-of-01000_188,tfrecord-00196-of-01000_398,tfrecord-00204-of-01000_11,tfrecord-00306-of-01000_321,tfrecord-00315-of-01000_384,tfrecord-00373-of-01000_209,tfrecord-00398-of-01000_475,tfrecord-00444-of-01000_464,tfrecord-00551-of-01000_267,tfrecord-00585-of-01000_140,tfrecord-00619-of-01000_326,tfrecord-00676-of-01000_450,tfrecord-00685-of-01000_305,tfrecord-00707-of-01000_112,tfrecord-00855-of-01000_180,tfrecord-00863-of-01000_388,tfrecord-00931-of-01000_384" | split: "," %}
 
-<table class="gif-grid">
-<tr>
-<td style="text-align:center"><strong>Neural Policy</strong></td>
-<td style="text-align:center"><strong>Log Replay</strong></td>
-</tr>
 {% for idx in scenarios %}
-<tr><td colspan="2" class="scenario-header">Scenario {{ forloop.index }} — {{ idx }}</td></tr>
-<tr>
-<td><img src="{{ site.baseurl }}/assets/gpudrive-eval/policy/{{ idx }}_policy.gif" alt="Policy {{ forloop.index }}"></td>
-<td><img src="{{ site.baseurl }}/assets/gpudrive-eval/replay/{{ idx }}_replay.gif" alt="Replay {{ forloop.index }}"></td>
-</tr>
+<div class="scenario-card">
+<div class="scenario-card__header">Scenario {{ forloop.index }} — {{ idx }}</div>
+<div class="scenario-card__label">Neural Policy</div>
+<img src="{{ site.baseurl }}/assets/gpudrive-eval/policy/{{ idx }}_policy.gif" alt="Policy {{ forloop.index }}">
+<div class="scenario-card__label">Log Replay</div>
+<img src="{{ site.baseurl }}/assets/gpudrive-eval/replay/{{ idx }}_replay.gif" alt="Replay {{ forloop.index }}">
+</div>
 {% endfor %}
-</table>

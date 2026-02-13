@@ -30,35 +30,38 @@
   padding-right: 1em;
 }
 
-// GIF 그리드 — 테이블 스타일 리셋
-.gif-grid {
-  box-shadow: none;
-  border: none;
-  border-radius: 0;
+// 시나리오 카드 — 세로 배치
+.scenario-card {
+  border: 2px solid #d1d5db;
+  border-radius: 8px;
+  margin-bottom: 2.5rem;
+  padding: 1rem;
+  background: #fff;
 
-  td, th {
-    border: none;
-    padding: 4px;
+  &__header {
+    background: #1a202c;
+    color: #fff;
+    font-weight: 700;
+    text-align: center;
+    padding: 0.6em 1em;
+    font-size: 1rem;
+    border-radius: 6px;
+    margin-bottom: 0.8rem;
   }
 
-  tr:hover {
-    background: none;
+  &__label {
+    font-weight: 600;
+    font-size: 0.85rem;
+    color: #4a5568;
+    margin: 0.6rem 0 0.3rem;
+    padding-left: 2px;
   }
 
   img {
     width: 100%;
-    border: 2px solid #1a1a1a;
+    border: 1px solid #e2e8f0;
     border-radius: 4px;
-  }
-
-  .scenario-header {
-    background: #f0f2f5;
-    font-weight: 600;
-    text-align: center;
-    padding: 8px;
-    font-size: 0.85rem;
-    color: #4a5568;
-    border-radius: 4px;
+    display: block;
   }
 }
 
