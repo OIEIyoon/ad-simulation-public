@@ -1,27 +1,23 @@
 docs:
   - title: Tasks
     children:
-      - title: "ViLS Server"
+      - title: "[1] ViLS Server"
         url: /tasks/vils-server/
-      - title: "IDM Rule-based Policy"
+      - title: "[2] IDM Rule-based Policy"
         url: /tasks/vils-server-progress-2025-12-26/
-      - title: "GPUDrive Policy Eval"
-        url: /tasks/gpudrive-policy-eval/
-      - title: "RL Traffic Simulation"
+      - title: "[3] RL Traffic Simulation"
         url: /tasks/rl-traffic-simulation/
+      - title: "[4] GPUDrive Policy Eval"
+        url: /tasks/gpudrive-policy-eval/
   - title: Notes
     children:
-      - title: "Waymax vs GPUDrive"
+      - title: "[1] Waymax vs GPUDrive"
         url: /notes/waymax_vs_gpudrive/
-      - title: "GPUDrive Observation"
+      - title: "[2] GPUDrive Observation"
         url: /notes/gpudrive-observation/
-      - title: "VBD"
-        url: /notes/vbd/
-      - title: "SMART"
-        url: /notes/smart/
-      - title: "PufferDrive"
-        url: /notes/pufferdrive/
-      - title: "GPUDrive to PufferDrive"
+      - title: "[3] GPUDrive to PufferDrive"
         url: /notes/gpudrive-to-pufferdrive/
-      - title: "Gigaflow vs GPUDrive"
+      - title: "[4] PufferDrive"
+        url: /notes/pufferdrive/
+      - title: "[5] Gigaflow vs GPUDrive"
         url: /notes/gigaflow-vs-gpudrive/

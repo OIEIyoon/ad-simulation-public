@@ -30,6 +30,49 @@
   }
 }
 
+// 사이드바 드롭다운 네비게이션
+.nav__list {
+  details {
+    summary.nav__sub-title {
+      cursor: pointer;
+      user-select: none;
+      list-style: none;
+      display: flex;
+      align-items: center;
+
+      &::before {
+        content: "▶";
+        font-size: 0.6em;
+        margin-right: 0.5em;
+        transition: transform 0.2s ease;
+      }
+
+      &::-webkit-details-marker {
+        display: none;
+      }
+    }
+
+    &[open] > summary.nav__sub-title::before {
+      transform: rotate(90deg);
+    }
+
+    ul {
+      animation: dropdown-open 0.2s ease;
+    }
+  }
+}
+
+@keyframes dropdown-open {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 // Mermaid 다이어그램
 .mermaid {
   background: #fafafa;
