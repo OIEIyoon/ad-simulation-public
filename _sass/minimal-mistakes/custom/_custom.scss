@@ -1,11 +1,23 @@
 // 콘텐츠 영역 확장 + 사이드바 좌측 이동
 .sidebar {
-  padding-left: 0.5em;
+  padding-left: 0;
   padding-right: 0;
+  min-width: 0;
+
+  @media (min-width: 64em) {
+    position: sticky;
+    top: 0;
+    left: 0;
+    padding-left: 0.5em;
+  }
 }
 
 .page {
   padding-right: 0;
+
+  @media (min-width: 64em) {
+    padding-left: 0.5em;
+  }
 }
 
 .wide .page {
@@ -14,7 +26,8 @@
 
 .archive {
   max-width: 100%;
-  padding-left: 1em;
+  padding-left: 0.5em;
+  padding-right: 1em;
 }
 
 // GIF 그리드 — 테이블 스타일 리셋
@@ -58,11 +71,18 @@
       list-style: none;
       display: flex;
       align-items: center;
+      justify-content: space-between;
+      font-size: 1.1em;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      padding: 0.4em 0;
+      border-bottom: 1px solid #e2e8f0;
+      margin-bottom: 0.3em;
 
-      &::before {
-        content: "▶";
-        font-size: 0.6em;
-        margin-right: 0.5em;
+      &::after {
+        content: "▾";
+        font-size: 0.9em;
+        color: #718096;
         transition: transform 0.2s ease;
       }
 
@@ -71,12 +91,17 @@
       }
     }
 
-    &[open] > summary.nav__sub-title::before {
-      transform: rotate(90deg);
+    &[open] > summary.nav__sub-title::after {
+      transform: rotate(180deg);
     }
 
     ul {
+      padding-left: 1em;
       animation: dropdown-open 0.2s ease;
+
+      li a {
+        font-size: 0.85em;
+      }
     }
   }
 }
