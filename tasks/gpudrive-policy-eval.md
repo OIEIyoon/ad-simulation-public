@@ -61,44 +61,18 @@ Obs (2,984-dim)
 
 ---
 
-## Benchmark (Paper-Reported)
+## Metrics
 
-GPUDrive 논문(ICLR 2025)에서 보고된 정량적 성능 지표.
+GPUDrive 평가 지표 ([arXiv:2408.01584](https://arxiv.org/abs/2408.01584), ICLR 2025).
 
-### Agent Performance
+| Metric | 판정 기준 | Paper 결과 |
+|:-------|:----------|:-----------|
+| **Goal Rate** | 목표 위치 $\delta$ 이내 도달 | 95% (1K scenes, 15h) |
+| **Collision** | 차량·도로·비차량 충돌 발생 | — |
+| **Off-road** | 도로 경계 이탈 | — |
+| **Other** | 충돌·이탈 없이 시간 초과 | — |
 
-| Metric | Value | Note |
-|:-------|------:|:-----|
-| **Goal Rate** | 95% | 1,000 WOMD 시나리오, 15h 학습 |
-| **Theoretical Ceiling** | ~98% | ~2% 시나리오는 WOMD 라벨 오류로 도달 불가 |
-
-> Collision Rate, Off-road Rate는 논문에서 수치로 명시하지 않음 (Figure 8 그래프만 제공).
-
-### Simulation Speed
-
-| Metric | Value | Note |
-|:-------|------:|:-----|
-| **Peak ASPS** | 1M+ | Agent Steps Per Second (전체 에이전트) |
-| **Controlled ASPS** | 200K–500K | 제어 에이전트만 (PufferLib PPO) |
-| **Speedup vs Nocturne** | 200–300× | 동일 10 시나리오 기준 |
-
-### Scaling Efficiency
-
-| Scenarios | Total Time | Per-Scene Cost |
-|----------:|-----------:|---------------:|
-| 10 | ~3 min | 18 sec |
-| 1,024 | ~200 min | **15 sec** |
-
-> Per-scene cost는 시나리오 수 증가에 따라 sub-linear 감소 (논문 Figure 6).
-
-### Evaluation Metrics 정의
-
-| Metric | 조건 | 판정 |
-|:-------|:-----|:-----|
-| **Goal Achieved** | 목표 위치 $\delta$ 이내 도달 | `dist(agent, goal) < dist_to_goal_threshold` |
-| **Collision** | 차량/도로/비차량 충돌 | `collidedWithVehicle + collidedWithRoad + collidedWithNonVehicle > 0` |
-| **Off-road** | 도로 경계 이탈 | `off_road > 0` |
-| **Other** | 목표 미달, 충돌/이탈 없음 | 시간 초과 (91 step 내 미도달) |
+> Goal Rate 이론 상한 ~98% — WOMD 라벨 오류로 ~2% 시나리오는 도달 불가
 
 ---
 
