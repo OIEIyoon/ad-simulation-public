@@ -1,8 +1,5 @@
 ---
 title: PufferDrive
-layout: default
-parent: Notes
-nav_order: 5
 ---
 
 # PufferDrive: High-Throughput RL Driving Simulator

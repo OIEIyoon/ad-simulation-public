@@ -1,0 +1,39 @@
+// GIF 그리드 — 테이블 스타일 리셋
+.gif-grid {
+  box-shadow: none;
+  border: none;
+  border-radius: 0;
+
+  td, th {
+    border: none;
+    padding: 4px;
+  }
+
+  tr:hover {
+    background: none;
+  }
+
+  img {
+    width: 100%;
+    border: 2px solid #1a1a1a;
+    border-radius: 4px;
+  }
+
+  .scenario-header {
+    background: #f0f2f5;
+    font-weight: 600;
+    text-align: center;
+    padding: 8px;
+    font-size: 0.85rem;
+    color: #4a5568;
+    border-radius: 4px;
+  }
+}
+
+// Mermaid 다이어그램
+.mermaid {
+  background: #fafafa;
+  padding: 1.5rem;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
+}

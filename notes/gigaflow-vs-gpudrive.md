@@ -1,8 +1,5 @@
 ---
 title: Gigaflow vs GPUDrive/PufferDrive
-layout: default
-parent: Notes
-nav_order: 7
 ---
 
 # Gigaflow vs GPUDrive/PufferDrive: 자율주행 시뮬레이터 비교

@@ -1,8 +1,5 @@
 ---
 title: "Research Direction: CL Reactive NPC for Planning Refinement"
-layout: default
-parent: Notes
-nav_order: 99
 published: false
 ---
 

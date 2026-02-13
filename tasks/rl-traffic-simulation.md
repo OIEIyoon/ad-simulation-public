@@ -1,8 +1,5 @@
 ---
 title: RL 기반 Traffic Simulation 연구
-layout: default
-parent: Tasks
-nav_order: 3
 ---
 
 # RL 기반 Traffic Simulation 연구

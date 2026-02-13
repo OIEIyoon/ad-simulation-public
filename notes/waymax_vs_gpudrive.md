@@ -1,8 +1,5 @@
 ---
 title: Waymax vs GPUDrive
-layout: default
-parent: Notes
-nav_order: 1
 ---
 
 # Waymax vs GPUDrive: 자율주행 시뮬레이터 비교 연구노트

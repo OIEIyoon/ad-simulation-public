@@ -1,8 +1,5 @@
 ---
 title: IDM 기반 Rule-based Policy
-layout: default
-parent: Tasks
-nav_order: 2
 date: 2025-12-26
 ---
 

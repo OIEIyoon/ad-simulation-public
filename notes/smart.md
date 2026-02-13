@@ -1,8 +1,5 @@
 ---
 title: SMART (Next-token Prediction)
-layout: default
-parent: Notes
-nav_order: 4
 ---
 
 # SMART: Scalable Multi-agent Real-time Motion Generation via Next-token Prediction

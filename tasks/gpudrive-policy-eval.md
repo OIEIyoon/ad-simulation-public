@@ -1,8 +1,5 @@
 ---
 title: GPUDrive Policy Evaluation
-layout: default
-parent: Tasks
-nav_order: 3
 ---
 
 # GPUDrive Policy Evaluation

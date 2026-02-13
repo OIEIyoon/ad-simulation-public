@@ -1,8 +1,5 @@
 ---
 title: ViLS - Traffic Simulation Server
-layout: default
-parent: Tasks
-nav_order: 1
 ---
 
 # ViLS - Traffic Simulation Server

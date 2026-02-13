@@ -9,20 +9,22 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Project Overview
 
 Jekyll 기반 GitHub Pages 사이트로, 자율주행 시뮬레이션 연구 문서를 작성하고 publish하는 저장소.
-- **Theme**: Just the Docs (remote theme)
+- **Theme**: Minimal Mistakes (remote theme)
 - **배포**: GitHub Pages 자동 배포 (push → 자동 빌드)
 
 ## Directory Structure
 
 ```
 /
-├── tasks/           # 연구 Task 문서 (활성 작업)
-├── notes/           # 연구 노트 (분석, 비교 문서)
-├── _includes/       # HTML snippets (MathJax, Giscus)
-├── _sass/custom/    # 커스텀 스타일링
-└── .claude/         # Claude Code 설정
-    ├── agents/      # AI 에이전트 정의
-    └── commands/    # 슬래시 커맨드 (/task-new, /task-list)
+├── tasks/                                    # 연구 Task 문서 (활성 작업)
+├── notes/                                    # 연구 노트 (분석, 비교 문서)
+├── _data/navigation.yml                      # 사이드바 네비게이션
+├── _includes/head/custom.html                # MathJax + Mermaid
+├── _includes/comments-providers/custom.html  # Giscus 댓글
+├── _sass/minimal-mistakes/custom/            # 커스텀 스타일링
+└── .claude/                                  # Claude Code 설정
+    ├── agents/                               # AI 에이전트 정의
+    └── commands/                             # 슬래시 커맨드 (/task-new, /task-list)
 ```
 
 ## Available Commands
@@ -49,11 +51,11 @@ Jekyll 기반 GitHub Pages 사이트로, 자율주행 시뮬레이션 연구 문
 ```yaml
 ---
 title: [제목]
-layout: default
-parent: Tasks  # 또는 Notes
-nav_order: [순서]
 ---
 ```
+
+레이아웃(`single`), 사이드바, `classes: wide`, TOC는 `_config.yml` defaults에서 자동 적용.
+새 페이지 추가 시 `_data/navigation.yml`에도 항목 추가 필요.
 
 ## Task Document Template
 
@@ -88,6 +90,8 @@ nav_order: [순서]
 
 ## Technical Notes
 
-- TOC 불필요 - Just the Docs 자동 생성
-- MathJax: `_includes/head_custom.html`에서 설정
-- Giscus 댓글: `_includes/footer_custom.html`에서 설정
+- TOC: `_config.yml` defaults에서 `toc: true`, `toc_sticky: true` 자동 적용
+- MathJax: `_includes/head/custom.html`에서 설정
+- Mermaid: `_includes/head/custom.html`에서 설정
+- Giscus 댓글: `_includes/comments-providers/custom.html`에서 설정
+- 네비게이션: `_data/navigation.yml`에서 사이드바 관리

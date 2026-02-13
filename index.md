@@ -1,7 +1,6 @@
 ---
 title: Home
-layout: home
-nav_order: 1
+layout: single
 ---
 
 # E2E 자율주행 - Simulation

@@ -1,8 +1,5 @@
 ---
 title: GPUDrive Observation 구조
-layout: default
-parent: Notes
-nav_order: 2
 ---
 
 # GPUDrive Observation 구조

@@ -33,8 +33,7 @@ published: false
 ```yaml
 ---
 title: 제목
-layout: default
-parent: Tasks
-nav_order: N
 ---
 ```
+
+새 Task 추가 시 `_data/navigation.yml`의 Tasks children에 항목 추가 필요.

@@ -1,8 +1,5 @@
 ---
 title: GPUDrive to PufferDrive
-layout: default
-parent: Notes
-nav_order: 6
 ---
 
 # GPUDrive → PufferDrive: 아키텍처 전환과 성능 향상

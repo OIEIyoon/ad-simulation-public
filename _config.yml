@@ -1,40 +1,28 @@
-remote_theme: just-the-docs/just-the-docs
+remote_theme: mmistakes/minimal-mistakes
 
+locale: ko-KR
 title: Autonomous Driving Notes
 description: 자율주행 연구노트
 
-# 검색 활성화
-search_enabled: true
-search:
-  heading_level: 2
-  previews: 3
-
-# 색상 테마
-color_scheme: light
+# Minimal Mistakes 설정
+minimal_mistakes_skin: default
+search: true
 
 # 네비게이션
-nav_sort: case_insensitive
-back_to_top: true
-back_to_top_text: "Back to top"
+breadcrumbs: true
 
 # Mermaid 다이어그램
 mermaid:
   version: "10.6.0"
 
-# Footer - 최소화
-gh_edit_link: false
-footer_content: ""
+# Footer
+footer:
+  links: []
 
-# 상단 링크 제거 (aux_links 없음)
+# 댓글 (Giscus)
+comments:
+  provider: custom
 
-# 빌드 제외
-exclude:
-  - CLAUDE.md
-  - .claude/
-  - README.md
-  - "**/CLAUDE.md"
-
-# Giscus 댓글
 giscus:
   repo: "OIEIyoon/ad-simulation-public"
   repo_id: "R_kgDOQrhk2g"
@@ -45,3 +33,30 @@ giscus:
   reactions_enabled: "1"
   theme: "preferred_color_scheme"
   lang: "ko"
+
+# 기본 레이아웃/사이드바 설정
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: single
+      sidebar:
+        nav: "docs"
+      classes: wide
+      comments: true
+      toc: true
+      toc_sticky: true
+
+# 플러그인
+plugins:
+  - jekyll-remote-theme
+  - jekyll-include-cache
+
+# 빌드 제외
+exclude:
+  - CLAUDE.md
+  - .claude/
+  - README.md
+  - "**/CLAUDE.md"
+  - Gemfile
+  - Gemfile.lock
