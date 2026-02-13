@@ -1,5 +1,6 @@
 ---
 title: GPUDrive Policy Evaluation
+permalink: /tasks/gpudrive-policy-eval/
 ---
 
 # GPUDrive Policy Evaluation

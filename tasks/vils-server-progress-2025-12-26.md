@@ -1,6 +1,7 @@
 ---
 title: IDM 기반 Rule-based Policy
 date: 2025-12-26
+permalink: /tasks/vils-server-progress-2025-12-26/
 ---
 
 # IDM 기반 Rule-based Policy

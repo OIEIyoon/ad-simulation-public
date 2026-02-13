@@ -1,5 +1,6 @@
 ---
 title: VBD (Versatile Behavior Diffusion)
+permalink: /notes/vbd/
 ---
 
 # VBD: Versatile Behavior Diffusion for Generalized Traffic Agent Simulation

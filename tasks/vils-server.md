@@ -1,5 +1,6 @@
 ---
 title: ViLS - Traffic Simulation Server
+permalink: /tasks/vils-server/
 ---
 
 # ViLS - Traffic Simulation Server

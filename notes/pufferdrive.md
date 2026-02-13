@@ -1,5 +1,6 @@
 ---
 title: PufferDrive
+permalink: /notes/pufferdrive/
 ---
 
 # PufferDrive: High-Throughput RL Driving Simulator

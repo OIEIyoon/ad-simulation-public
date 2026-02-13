@@ -1,5 +1,6 @@
 ---
 title: SMART (Next-token Prediction)
+permalink: /notes/smart/
 ---
 
 # SMART: Scalable Multi-agent Real-time Motion Generation via Next-token Prediction

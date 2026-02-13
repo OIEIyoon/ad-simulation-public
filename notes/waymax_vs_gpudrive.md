@@ -1,5 +1,6 @@
 ---
 title: Waymax vs GPUDrive
+permalink: /notes/waymax_vs_gpudrive/
 ---
 
 # Waymax vs GPUDrive: 자율주행 시뮬레이터 비교 연구노트

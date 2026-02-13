@@ -1,5 +1,6 @@
 ---
 title: GPUDrive Observation 구조
+permalink: /notes/gpudrive-observation/
 ---
 
 # GPUDrive Observation 구조

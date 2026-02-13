@@ -1,5 +1,6 @@
 ---
 title: Gigaflow vs GPUDrive/PufferDrive
+permalink: /notes/gigaflow-vs-gpudrive/
 ---
 
 # Gigaflow vs GPUDrive/PufferDrive: 자율주행 시뮬레이터 비교

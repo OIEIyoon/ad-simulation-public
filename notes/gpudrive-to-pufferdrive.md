@@ -1,5 +1,6 @@
 ---
 title: GPUDrive to PufferDrive
+permalink: /notes/gpudrive-to-pufferdrive/
 ---
 
 # GPUDrive → PufferDrive: 아키텍처 전환과 성능 향상

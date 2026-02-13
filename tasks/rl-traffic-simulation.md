@@ -1,5 +1,6 @@
 ---
 title: RL 기반 Traffic Simulation 연구
+permalink: /tasks/rl-traffic-simulation/
 ---
 
 # RL 기반 Traffic Simulation 연구

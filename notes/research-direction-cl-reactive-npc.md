@@ -1,6 +1,7 @@
 ---
 title: "Research Direction: CL Reactive NPC for Planning Refinement"
 published: false
+permalink: /notes/research-direction-cl-reactive-npc/
 ---
 
 # Research Direction: Closed-Loop Reactive NPC for Planning Refinement

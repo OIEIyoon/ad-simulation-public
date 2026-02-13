@@ -1,5 +1,6 @@
 ---
 title: Tasks
+permalink: /tasks/
 ---
 
 # Tasks
