@@ -30,39 +30,27 @@
   padding-right: 1em;
 }
 
-// 시나리오 카드
-.scenario-card {
-  border: 2px solid #d1d5db;
-  border-radius: 8px;
-  margin-bottom: 1.5rem;
-  padding: 0.6rem 0.8rem;
-  background: #fff;
+// GIF 2열 그리드
+.gif-grid {
+  width: 100%;
   max-width: 720px;
+  border-collapse: collapse;
+  box-shadow: none;
+  border: none;
 
-  &__header {
-    background: #2d3748;
-    color: #fff;
-    font-weight: 600;
-    text-align: center;
-    padding: 0.35em 0.8em;
-    font-size: 0.85rem;
-    border-radius: 4px;
-    margin-bottom: 0.5rem;
+  td {
+    width: 50%;
+    padding: 4px;
+    border: none;
+    vertical-align: top;
   }
 
-  display: flex;
-  flex-wrap: wrap;
-
-  .scenario-card__header {
-    flex: 0 0 100%;
-  }
+  tr:hover { background: none; }
 
   img {
-    width: calc(50% - 4px);
+    width: 100%;
     border: 1px solid #e2e8f0;
     border-radius: 4px;
-    display: block;
-    margin: 2px;
   }
 }
 
