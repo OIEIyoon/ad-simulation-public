@@ -1,3 +1,22 @@
+// 콘텐츠 영역 확장 + 사이드바 좌측 이동
+.sidebar {
+  padding-left: 0.5em;
+  padding-right: 0;
+}
+
+.page {
+  padding-right: 0;
+}
+
+.wide .page {
+  max-width: 100%;
+}
+
+.archive {
+  max-width: 100%;
+  padding-left: 1em;
+}
+
 // GIF 그리드 — 테이블 스타일 리셋
 .gif-grid {
   box-shadow: none;
