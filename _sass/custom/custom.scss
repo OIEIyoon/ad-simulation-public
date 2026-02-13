@@ -131,17 +131,6 @@ a {
   background-color: #fafafa;
   border-right: 1px solid #e2e8f0;
 
-  @media (min-width: 66.5rem) {
-    width: 230px !important;
-    min-width: 230px !important;
-  }
-}
-
-// 메인 영역 사이드바 폭에 맞춤
-@media (min-width: 66.5rem) {
-  .main {
-    margin-left: 230px !important;
-  }
 }
 
 .site-title {
