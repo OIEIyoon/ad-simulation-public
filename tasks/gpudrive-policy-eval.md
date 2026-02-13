@@ -71,8 +71,8 @@ GPUDrive 논문(ICLR 2025)에서 보고된 정량적 성능 지표.
 |:-------|------:|:-----|
 | **Goal Rate** | 95% | 1,000 WOMD 시나리오, 15h 학습 |
 | **Theoretical Ceiling** | ~98% | ~2% 시나리오는 WOMD 라벨 오류로 도달 불가 |
-| **Collision Rate** | ~3–5% | 학습 완료 시점 기준 |
-| **Off-road Rate** | ~2–4% | 학습 완료 시점 기준 |
+
+> Collision Rate, Off-road Rate는 논문에서 수치로 명시하지 않음 (Figure 8 그래프만 제공).
 
 ### Simulation Speed
 
@@ -87,10 +87,9 @@ GPUDrive 논문(ICLR 2025)에서 보고된 정량적 성능 지표.
 | Scenarios | Total Time | Per-Scene Cost |
 |----------:|-----------:|---------------:|
 | 10 | ~3 min | 18 sec |
-| 100 | ~20 min | 12 sec |
 | 1,024 | ~200 min | **15 sec** |
 
-> Per-scene cost는 시나리오 수 증가에 따라 sub-linear 감소. 대규모 WOMD(100K scenes) 학습에도 학술 연구급 GPU 단일 장비로 가능.
+> Per-scene cost는 시나리오 수 증가에 따라 sub-linear 감소 (논문 Figure 6).
 
 ### Evaluation Metrics 정의
 
