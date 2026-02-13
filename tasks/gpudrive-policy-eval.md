@@ -61,6 +61,48 @@ Obs (2,984-dim)
 
 ---
 
+## Benchmark (Paper-Reported)
+
+GPUDrive 논문(ICLR 2025)에서 보고된 정량적 성능 지표.
+
+### Agent Performance
+
+| Metric | Value | Note |
+|:-------|------:|:-----|
+| **Goal Rate** | 95% | 1,000 WOMD 시나리오, 15h 학습 |
+| **Theoretical Ceiling** | ~98% | ~2% 시나리오는 WOMD 라벨 오류로 도달 불가 |
+| **Collision Rate** | ~3–5% | 학습 완료 시점 (Figure 8) |
+| **Off-road Rate** | ~2–4% | 학습 완료 시점 (Figure 8) |
+
+### Simulation Speed
+
+| Metric | Value | Note |
+|:-------|------:|:-----|
+| **Peak ASPS** | 1M+ | Agent Steps Per Second (전체 에이전트) |
+| **Controlled ASPS** | 200K–500K | 제어 에이전트만 (PufferLib PPO) |
+| **Speedup vs Nocturne** | 200–300× | 동일 10 시나리오 기준 |
+
+### Scaling Efficiency
+
+| Scenarios | Total Time | Per-Scene Cost |
+|----------:|-----------:|---------------:|
+| 10 | ~3 min | 18 sec |
+| 100 | ~20 min | 12 sec |
+| 1,024 | ~200 min | **15 sec** |
+
+> Per-scene cost는 시나리오 수 증가에 따라 sub-linear 감소. 대규모 WOMD(100K scenes) 학습에도 학술 연구급 GPU 단일 장비로 가능.
+
+### Evaluation Metrics 정의
+
+| Metric | 조건 | 판정 |
+|:-------|:-----|:-----|
+| **Goal Achieved** | 목표 위치 $\delta$ 이내 도달 | `dist(agent, goal) < dist_to_goal_threshold` |
+| **Collision** | 차량/도로/비차량 충돌 | `collidedWithVehicle + collidedWithRoad + collidedWithNonVehicle > 0` |
+| **Off-road** | 도로 경계 이탈 | `off_road > 0` |
+| **Other** | 목표 미달, 충돌/이탈 없음 | 시간 초과 (91 step 내 미도달) |
+
+---
+
 ## Results
 
 각 시나리오별 **Neural Policy** vs **Log Replay** 비교.
