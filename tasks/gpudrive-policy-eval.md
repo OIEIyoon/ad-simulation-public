@@ -69,10 +69,8 @@ Obs (2,984-dim)
 
 {% for idx in scenarios %}
 <div class="scenario-card">
-<div class="scenario-card__header">Scenario {{ forloop.index }} — {{ idx }}</div>
-<div class="scenario-card__label">Neural Policy</div>
+<div class="scenario-card__header">Scenario {{ forloop.index }}</div>
 <img src="{{ site.baseurl }}/assets/gpudrive-eval/policy/{{ idx }}_policy.gif" alt="Policy {{ forloop.index }}">
-<div class="scenario-card__label">Log Replay</div>
 <img src="{{ site.baseurl }}/assets/gpudrive-eval/replay/{{ idx }}_replay.gif" alt="Replay {{ forloop.index }}">
 </div>
 {% endfor %}

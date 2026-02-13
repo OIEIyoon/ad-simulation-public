@@ -30,38 +30,39 @@
   padding-right: 1em;
 }
 
-// 시나리오 카드 — 세로 배치
+// 시나리오 카드
 .scenario-card {
   border: 2px solid #d1d5db;
   border-radius: 8px;
-  margin-bottom: 2.5rem;
-  padding: 1rem;
+  margin-bottom: 1.5rem;
+  padding: 0.6rem 0.8rem;
   background: #fff;
+  max-width: 720px;
 
   &__header {
-    background: #1a202c;
+    background: #2d3748;
     color: #fff;
-    font-weight: 700;
+    font-weight: 600;
     text-align: center;
-    padding: 0.6em 1em;
-    font-size: 1rem;
-    border-radius: 6px;
-    margin-bottom: 0.8rem;
+    padding: 0.35em 0.8em;
+    font-size: 0.85rem;
+    border-radius: 4px;
+    margin-bottom: 0.5rem;
   }
 
-  &__label {
-    font-weight: 600;
-    font-size: 0.85rem;
-    color: #4a5568;
-    margin: 0.6rem 0 0.3rem;
-    padding-left: 2px;
+  display: flex;
+  flex-wrap: wrap;
+
+  .scenario-card__header {
+    flex: 0 0 100%;
   }
 
   img {
-    width: 100%;
+    width: calc(50% - 4px);
     border: 1px solid #e2e8f0;
     border-radius: 4px;
     display: block;
+    margin: 2px;
   }
 }
 
