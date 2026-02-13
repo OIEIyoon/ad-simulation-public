@@ -12,5 +12,15 @@ MathJax = {
 <!-- Mermaid -->
 <script src="https://cdn.jsdelivr.net/npm/mermaid@{{ site.mermaid.version }}/dist/mermaid.min.js"></script>
 <script>
-  mermaid.initialize({ startOnLoad: true, theme: 'default' });
+  mermaid.initialize({ startOnLoad: false, theme: 'default' });
+  document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('pre > code.language-mermaid').forEach(function(code) {
+      var pre = code.parentElement;
+      var div = document.createElement('pre');
+      div.className = 'mermaid';
+      div.textContent = code.textContent;
+      pre.parentElement.replaceChild(div, pre);
+    });
+    mermaid.run();
+  });
 </script>
